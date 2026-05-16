@@ -6,3 +6,6 @@
 
 ==== ABOUT.HTML ====
 1. Add accreditation tab to sidepanel - AICTE, INC, AYUSH etc
+
+==== COURSES.HTML ====
+1. Add All the required icons

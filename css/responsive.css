@@ -212,6 +212,30 @@
   .eligibility-table {
     font-size: 0.82rem;
   }
+
+  /* Facilities */
+  .facility-row,
+  .facility-row.reverse {
+    grid-template-columns: 1fr;
+    direction: ltr;
+    min-height: auto;
+  }
+
+  .facility-image {
+    height: 250px;
+  }
+
+  .facility-text {
+    padding: 2rem 1.5rem;
+  }
+
+  .facility-number {
+    font-size: 2.5rem;
+  }
+
+  .facility-name {
+    font-size: 1.4rem;
+  }
 }
 
 /* ============================================

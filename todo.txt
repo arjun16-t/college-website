@@ -3,3 +3,6 @@
 2. Put SVG Files for all icons
 3. Choose Images to put
 4. Create a gallery carousel for homepage for the placeholder gradient background
+
+==== ABOUT.HTML ====
+1. Add accreditation tab to sidepanel - AICTE, INC, AYUSH etc

@@ -307,3 +307,48 @@ if (initialHash && document.getElementById(initialHash)) {
   // Default to first section
   activateSection('about-rml');
 }
+
+// ============================================
+//   FAQ ACCORDION
+// ============================================
+const faqItems = document.querySelectorAll('.faq-item');
+
+faqItems.forEach(item => {
+  const question = item.querySelector('.faq-question');
+
+  question.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+
+    // Close all first
+    faqItems.forEach(i => i.classList.remove('open'));
+
+    // Open clicked one if it was closed
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// ============================================
+//   COURSE PAGE - Sidebar Active Link on Scroll
+// ============================================
+const courseSections = document.querySelectorAll('.course-section');
+const sidebarLinks = document.querySelectorAll('.course-sidebar-link');
+
+if (courseSections.length > 0) {
+  window.addEventListener('scroll', () => {
+    let current = '';
+
+    courseSections.forEach(section => {
+      const sectionTop = section.offsetTop - 150;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    sidebarLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.add('active');
+      }
+    });
+  });
+}

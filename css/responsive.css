@@ -136,6 +136,68 @@
     gap: 0.5rem;
     text-align: center;
   }
+
+  /* Programmes grid */
+  .programmes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Why study grid */
+  .why-study-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* CTA section */
+  .cta-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .cta-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Course page */
+  .course-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-sidebar {
+    position: static;
+  }
+
+  .course-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .course-hero-title {
+    font-size: 1.8rem;
+  }
+
+  .course-apply-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .highlights-grid,
+  .careers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-content {
+    padding: 1.75rem;
+  }
 }
 
 /* ============================================

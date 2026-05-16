@@ -2507,3 +2507,126 @@ p {
   color: var(--clr-gray-text);
   line-height: 1.9;
 }
+
+/* ============================================
+   ADMISSIONS PAGE
+   ============================================ */
+
+/* Steps */
+.admission-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 1.5rem;
+}
+
+.admission-step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--clr-gray-mid);
+  position: relative;
+}
+
+.admission-step:last-child {
+  border-bottom: none;
+}
+
+.step-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--clr-primary);
+  opacity: 0.2;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 60px;
+  font-family: var(--font-heading);
+}
+
+.step-content h4 {
+  font-size: 1.1rem;
+  color: var(--clr-black);
+  margin-bottom: 0.5rem;
+}
+
+.step-content p {
+  font-size: 1rem;
+  color: var(--clr-gray-text);
+  line-height: 1.8;
+}
+
+/* Documents list */
+.admission-docs-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.admission-docs-list li {
+  font-size: 1rem;
+  color: var(--clr-gray-text);
+  padding-left: 1.25rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.admission-docs-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 7px;
+  height: 7px;
+  background-color: var(--clr-primary);
+  border-radius: 50%;
+}
+
+/* Admission CTA box */
+.admission-cta-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding: 2rem;
+  background-color: var(--clr-gray-light);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--clr-primary);
+  flex-wrap: wrap;
+}
+
+.admission-cta-box p {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--clr-black);
+  flex: 1;
+  margin: 0;
+}
+
+/* Eligibility table */
+.eligibility-table-wrap {
+  overflow-x: auto;
+}
+
+.eligibility-table td,
+.eligibility-table th {
+  vertical-align: middle;
+}
+
+.eligibility-table small {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--clr-gray-text);
+  font-weight: 400;
+  margin-top: 0.2rem;
+}
+
+/* Panel subtitle */
+.panel-subtitle {
+  font-size: 1.2rem;
+  color: var(--clr-black);
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+}

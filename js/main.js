@@ -301,11 +301,11 @@ sidebarBtns.forEach(btn => {
 
 // On page load — read hash from URL
 const initialHash = window.location.hash.replace('#', '');
+
 if (initialHash && document.getElementById(initialHash)) {
   activateSection(initialHash);
-} else {
-  // Default to first section
-  activateSection('about-rml');
+} else if (contentPanels.length > 0) {
+  activateSection(contentPanels[0].id);
 }
 
 // ============================================

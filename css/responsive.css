@@ -198,6 +198,20 @@
   .course-content {
     padding: 1.75rem;
   }
+
+  /* Admissions */
+  .admission-docs-list {
+    grid-template-columns: 1fr;
+  }
+
+  .admission-cta-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .eligibility-table {
+    font-size: 0.82rem;
+  }
 }
 
 /* ============================================

@@ -259,3 +259,51 @@ enquiryForm?.addEventListener('submit', (e) => {
     }, 3000);
   }
 });
+
+// ============================================
+//   ABOUT PAGE - SIDEBAR TAB SWITCHING
+// ============================================
+const sidebarBtns = document.querySelectorAll('.sidebar-btn');
+const contentPanels = document.querySelectorAll('.content-panel');
+
+const activateSection = (targetId) => {
+  // Remove active from all
+  sidebarBtns.forEach(b => b.classList.remove('active'));
+  contentPanels.forEach(p => p.classList.remove('active'));
+
+  // Find matching btn and panel
+  const targetBtn = document.querySelector(
+    `.sidebar-btn[data-section="${targetId}"]`
+  );
+  const targetPanel = document.getElementById(targetId);
+
+  if (targetBtn) targetBtn.classList.add('active');
+  if (targetPanel) targetPanel.classList.add('active');
+};
+
+// Handle sidebar clicks
+sidebarBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.getAttribute('data-section');
+
+    // Update URL hash without page jump
+    history.pushState(null, null, `#${target}`);
+
+    activateSection(target);
+
+    // Scroll to content on mobile
+    if (window.innerWidth < 768) {
+      document.querySelector('.about-content')
+        ?.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+// On page load — read hash from URL
+const initialHash = window.location.hash.replace('#', '');
+if (initialHash && document.getElementById(initialHash)) {
+  activateSection(initialHash);
+} else {
+  // Default to first section
+  activateSection('about-rml');
+}

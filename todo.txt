@@ -1,0 +1,5 @@
+==== INDEX.HTML ====
+1. Implement Backend for enquiry form (and google reCAPTCHA v3 or CloudFare)
+2. Put SVG Files for all icons
+3. Choose Images to put
+4. Create a gallery carousel for homepage for the placeholder gradient background

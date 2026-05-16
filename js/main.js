@@ -352,3 +352,109 @@ if (courseSections.length > 0) {
     });
   });
 }
+
+// ============================================
+//   GALLERY - Filter + Lightbox
+// ============================================
+const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+const galleryItems = document.querySelectorAll('.gallery-item');
+const lightbox = document.getElementById('lightbox');
+const lightboxClose = document.getElementById('lightboxClose');
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
+const lightboxLabel = document.getElementById('lightboxLabel');
+const lightboxCaption = document.getElementById('lightboxCaption');
+
+let currentIndex = 0;
+let visibleItems = [];
+
+// ── Filter ──
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Update active button
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.getAttribute('data-filter');
+
+    galleryItems.forEach(item => {
+      const cat = item.getAttribute('data-category');
+      if (filter === 'all' || cat === filter) {
+        item.classList.remove('hidden');
+        item.classList.add('fade-in');
+        setTimeout(() => item.classList.remove('fade-in'), 400);
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+
+    // Update visible items for lightbox
+    updateVisibleItems();
+  });
+});
+
+// ── Update visible items list ──
+const updateVisibleItems = () => {
+  visibleItems = [...galleryItems].filter(
+    item => !item.classList.contains('hidden')
+  );
+};
+
+// Initial visible items
+updateVisibleItems();
+
+// ── Open Lightbox ──
+galleryItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const index = parseInt(item.getAttribute('data-index'));
+    const label = item.querySelector('span')?.textContent || '';
+
+    // Find position in visible items
+    currentIndex = visibleItems.indexOf(item);
+
+    showLightbox(label);
+  });
+});
+
+const showLightbox = (label) => {
+  const item = visibleItems[currentIndex];
+  const caption = item?.querySelector('span')?.textContent || '';
+
+  lightboxLabel.textContent = caption;
+  lightboxCaption.textContent = caption;
+
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+// ── Close Lightbox ──
+const closeLightbox = () => {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+lightboxClose?.addEventListener('click', closeLightbox);
+
+lightbox?.addEventListener('click', (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!lightbox?.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') navigateLightbox(1);
+  if (e.key === 'ArrowLeft') navigateLightbox(-1);
+});
+
+// ── Navigate Lightbox ──
+const navigateLightbox = (direction) => {
+  currentIndex = (currentIndex + direction + visibleItems.length)
+    % visibleItems.length;
+  const caption = visibleItems[currentIndex]
+    ?.querySelector('span')?.textContent || '';
+  lightboxLabel.textContent = caption;
+  lightboxCaption.textContent = caption;
+};
+
+lightboxNext?.addEventListener('click', () => navigateLightbox(1));
+lightboxPrev?.addEventListener('click', () => navigateLightbox(-1));

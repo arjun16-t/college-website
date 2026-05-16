@@ -236,6 +236,20 @@
   .facility-name {
     font-size: 1.4rem;
   }
+
+  /* Gallery */
+  .gallery-grid {
+    columns: 2;
+  }
+
+  .gallery-filters {
+    gap: 0.5rem;
+  }
+
+  .gallery-filter-btn {
+    font-size: 0.82rem;
+    padding: 0.5rem 1rem;
+  }
 }
 
 /* ============================================
@@ -256,4 +270,8 @@
   }
 
   h2 { font-size: 1.6rem; }
+  
+  .gallery-grid {
+    columns: 1;
+  }
 }

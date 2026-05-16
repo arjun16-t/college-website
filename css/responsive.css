@@ -1,0 +1,159 @@
+/* ============================================
+   RESPONSIVE STYLES
+   Breakpoints:
+   - Mobile:  < 768px
+   - Tablet:  768px - 1024px
+   - Desktop: > 1024px
+   ============================================ */
+
+
+/* ============================================
+   MOBILE - max-width: 768px
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Show hamburger */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Hide CTA button on very small screens */
+  .nav-cta {
+    display: none;
+  }
+
+  /* Nav links - hidden by default on mobile */
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--clr-white);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1.5rem;
+    box-shadow: var(--shadow-md);
+
+    /* Hidden state */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+
+  /* Open state - JS adds this class */
+  .nav-links.open {
+    max-height: 500px;
+    padding: 1rem 1.5rem;
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--clr-gray-mid);
+    font-size: 1rem;
+  }
+
+  .nav-link:last-child {
+    border-bottom: none;
+  }
+
+  /* Hide underline effect on mobile */
+  .nav-link::after {
+    display: none;
+  }
+
+  /* Dropdown on mobile - always visible when menu open */
+  .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    padding: 0 0 0 1rem;
+    border-left: 2px solid var(--clr-gray-mid);
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  .dropdown-arrow {
+    display: none;
+  }
+
+  /* Shrink brand name slightly */
+  .brand-name {
+    font-size: 0.95rem;
+  }
+
+  .brand-location {
+    display: none;
+  }
+
+  /* Courses grid */
+  .courses-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Why grid */
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* About section - stack vertically */
+  .about-grid {
+    flex-direction: column;
+  }
+
+  .about-img-wrapper img {
+    height: 300px;
+  }
+
+  /* Hero text sizing */
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+  }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .footer-bottom .container {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+/* ============================================
+   SMALL MOBILE - max-width: 480px
+   ============================================ */
+@media (max-width: 480px) {
+
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  h2 { font-size: 1.6rem; }
+}

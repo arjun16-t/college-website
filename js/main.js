@@ -458,3 +458,31 @@ const navigateLightbox = (direction) => {
 
 lightboxNext?.addEventListener('click', () => navigateLightbox(1));
 lightboxPrev?.addEventListener('click', () => navigateLightbox(-1));
+
+// ============================================
+//   NOTICES - Filter
+// ============================================
+const noticeFilterBtns = document.querySelectorAll(
+  '.notices-page .gallery-filter-btn'
+);
+const noticeRows = document.querySelectorAll('.notice-row');
+
+noticeFilterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    noticeFilterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.getAttribute('data-filter');
+
+    noticeRows.forEach(row => {
+      const cat = row.getAttribute('data-category');
+      if (filter === 'all' || cat === filter) {
+        row.classList.remove('hidden');
+        row.classList.add('fade-in');
+        setTimeout(() => row.classList.remove('fade-in'), 300);
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+  });
+});

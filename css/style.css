@@ -2962,3 +2962,117 @@ p {
 .lightbox-next:hover {
   background-color: var(--clr-primary);
 }
+
+/* ============================================
+   NOTICES PAGE
+   ============================================ */
+.notices-page {
+  background-color: var(--clr-gray-light);
+}
+
+.notices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Each notice row */
+.notice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  background-color: var(--clr-white);
+  border-radius: var(--radius-md);
+  padding: 1.75rem 2rem;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--clr-primary);
+  transition: var(--transition);
+}
+
+.notice-row:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Hidden filtered items */
+.notice-row.hidden {
+  display: none;
+}
+
+.notice-row.fade-in {
+  animation: galleryFade 0.3s ease forwards;
+}
+
+/* Left side */
+.notice-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+/* Tags */
+.notice-tag {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--clr-white);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.notice-tag.admission { background-color: var(--clr-primary); }
+.notice-tag.exam      { background-color: #1565c0; }
+.notice-tag.events    { background-color: #2e7d32; }
+.notice-tag.general   { background-color: #6d4c41; }
+
+/* Notice info */
+.notice-title {
+  font-size: 1.05rem;
+  color: var(--clr-black);
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+.notice-desc {
+  font-size: 0.92rem;
+  color: var(--clr-gray-text);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+}
+
+.notice-date {
+  font-size: 0.82rem;
+  color: var(--clr-gray-text);
+}
+
+/* Download button */
+.notice-download {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border: 2px solid var(--clr-primary);
+  border-radius: var(--radius-sm);
+  color: var(--clr-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.notice-download:hover {
+  background-color: var(--clr-primary);
+  color: var(--clr-white);
+}
+
+.download-icon {
+  font-size: 1rem;
+}

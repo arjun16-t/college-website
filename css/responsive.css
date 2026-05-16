@@ -250,6 +250,18 @@
     font-size: 0.82rem;
     padding: 0.5rem 1rem;
   }
+
+  /* Notices */
+  .notice-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .notice-download {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ============================================

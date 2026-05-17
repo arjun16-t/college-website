@@ -192,8 +192,14 @@ p {
 .navbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding: 1rem 0;
+}
+
+.nav-container {
+  width: 90%;
+  max-width: 1500px;
+  margin: 0 auto;
 }
 
 /* --- Brand / Logo area --- */
@@ -233,6 +239,7 @@ p {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-left: auto;
 }
 
 .nav-link {
@@ -273,6 +280,7 @@ p {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-left: 1.5rem;
 }
 
 .nav-cta {

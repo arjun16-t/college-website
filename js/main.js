@@ -267,19 +267,24 @@ const sidebarBtns = document.querySelectorAll('.sidebar-btn');
 const contentPanels = document.querySelectorAll('.content-panel');
 
 const activateSection = (targetId) => {
-  // Remove active from all
-  sidebarBtns.forEach(b => b.classList.remove('active'));
-  contentPanels.forEach(p => p.classList.remove('active'));
+  if (!targetId) return;
 
-  // Find matching btn and panel
+  // Check if section exists on this page
+  const targetPanel = document.getElementById(targetId);
+  if (!targetPanel) return;
+
+  // Update sidebar buttons
+  sidebarBtns.forEach(b => b.classList.remove('active'));
   const targetBtn = document.querySelector(
     `.sidebar-btn[data-section="${targetId}"]`
   );
-  const targetPanel = document.getElementById(targetId);
-
   if (targetBtn) targetBtn.classList.add('active');
-  if (targetPanel) targetPanel.classList.add('active');
+
+  // Update panels
+  contentPanels.forEach(p => p.classList.remove('active'));
+  targetPanel.classList.add('active');
 };
+
 
 // Handle sidebar clicks
 sidebarBtns.forEach(btn => {
@@ -299,13 +304,25 @@ sidebarBtns.forEach(btn => {
   });
 });
 
+// ── Listen for hash changes (navbar dropdown clicks) ──
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.replace('#', '');
+  activateSection(hash);
+
+  // Scroll to top of content smoothly
+  document.querySelector('.about-content, .about-page')
+    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
 // On page load — read hash from URL
 const initialHash = window.location.hash.replace('#', '');
-
 if (initialHash && document.getElementById(initialHash)) {
   activateSection(initialHash);
 } else if (contentPanels.length > 0) {
-  activateSection(contentPanels[0].id);
+  const firstBtn = sidebarBtns[0];
+  if (firstBtn) {
+    activateSection(firstBtn.getAttribute('data-section'));
+  }
 }
 
 // ============================================

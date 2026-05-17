@@ -23,14 +23,48 @@ hamburger.addEventListener('click', () => {
   navLinks.classList.toggle('open');
 });
 
-
-// ============================================
-//   NAVBAR - Close menu when a link is clicked
-// ============================================
-document.querySelectorAll('.nav-link').forEach(link => {
+// Close menu when a non-dropdown link is clicked
+document.querySelectorAll('.nav-link:not(.dropdown-toggle)')
+.forEach(link => {
   link.addEventListener('click', () => {
     hamburger.classList.remove('active');
     navLinks.classList.remove('open');
+    // Close all dropdowns too
+    document.querySelectorAll('.dropdown-menu')
+      .forEach(m => m.classList.remove('open'));
+  });
+});
+
+// ── Mobile dropdown toggle ──
+document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+  toggle.addEventListener('click', (e) => {
+    // Only intercept on mobile
+    if (window.innerWidth > 768) return;
+
+    e.preventDefault(); // don't navigate yet
+
+    const parentLi = toggle.closest('.nav-item-dropdown');
+    const dropdownMenu = parentLi.querySelector('.dropdown-menu');
+
+    // Close all other dropdowns first
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+      if (menu !== dropdownMenu) {
+        menu.classList.remove('open');
+      }
+    });
+
+    // Toggle this dropdown
+    dropdownMenu.classList.toggle('open');
+  });
+});
+
+// Dropdown link clicked on mobile → navigate + close menu
+document.querySelectorAll('.dropdown-menu a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('open');
+    document.querySelectorAll('.dropdown-menu')
+      .forEach(m => m.classList.remove('open'));
   });
 });
 
@@ -133,10 +167,12 @@ dots.forEach(dot => {
 });
 
 // Auto-play every 5 seconds
-const autoPlay = setInterval(() => {
-  const next = (currentSlide + 1) % slides.length;
-  goToSlide(next);
-}, 5000);
+if (slides.length > 0) {
+  const autoPlay = setInterval(() => {
+    const next = (currentSlide + 1) % slides.length;
+    goToSlide(next);
+  }, 5000);
+}
 
 // ============================================
 //   ENQUIRY MODAL

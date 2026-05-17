@@ -42,7 +42,8 @@
 
   /* Open state - JS adds this class */
   .nav-links.open {
-    max-height: 500px;
+    max-height: 100vh;
+    overflow-y: auto;
     padding: 1rem 1.5rem;
   }
 
@@ -69,13 +70,22 @@
     visibility: visible;
     transform: none;
     box-shadow: none;
-    padding: 0 0 0 1rem;
+    padding: 0;
     border-left: 2px solid var(--clr-gray-mid);
-    margin: 0.25rem 0 0.5rem;
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
   }
 
+  .dropdown-menu.open {
+    max-height: 300px;
+    padding: 0.25rem 0 0.5rem 1rem;
+  }
+
+
   .dropdown-arrow {
-    display: none;
+    display: inline-block;
   }
 
   /* Shrink brand name slightly */
@@ -104,6 +114,97 @@
 
   .about-img-wrapper img {
     height: 300px;
+  }
+
+  /* About & Admissions page layout */
+  .about-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-sidebar {
+    position: static;
+    padding: 1.25rem;
+  }
+
+  .about-content {
+    padding: 1.75rem;
+    min-height: auto;
+  }
+
+  /* Sidebar buttons — readable on mobile */
+  .sidebar-btn {
+    font-size: 0.95rem;
+    padding: 1rem 1.25rem;
+  }
+
+  /* Vision Mission */
+  .vm-grid {
+    display: block;
+  }
+
+  /* Facts grid */
+  .facts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Eligibility cards */
+  .eligibility-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* Documents grid */
+  .documents-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* News grid */
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* News carousel */
+  .news-slide {
+    grid-template-columns: 1fr;
+  }
+
+  .news-slide-image {
+    height: 200px;
+  }
+
+  .news-slide-text {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .carousel-prev { left: 0.5rem; }
+  .carousel-next { right: 0.5rem; }
+
+  /* Panel title */
+  .panel-title {
+    font-size: 1.6rem;
+  }
+
+  /* PSD tables — scrollable on mobile */
+  .psd-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Disclosure items */
+  .disclosure-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* About page hero title */
+  .page-hero-title {
+    font-size: 1.4rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  /* Contact hero grid */
+  .contact-grid {
+    grid-template-columns: 1fr;
   }
 
   /* Hero text sizing */
@@ -342,13 +443,25 @@
     grid-template-columns: 1fr;
   }
 
+  .facts-grid {
+    grid-template-columns: 1fr;
+  }
+
   .hero-title {
     font-size: 1.8rem;
   }
 
   h2 { font-size: 1.6rem; }
-  
+
   .gallery-grid {
     columns: 1;
+  }
+
+  .step-indicators {
+    gap: 0;
+  }
+
+  .step-indicator span {
+    display: none;
   }
 }

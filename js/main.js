@@ -486,3 +486,51 @@ noticeFilterBtns.forEach(btn => {
     });
   });
 });
+
+// ============================================
+//   CONTACT FORM VALIDATION
+// ============================================
+const contactForm = document.getElementById('contactForm');
+
+contactForm?.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const name    = document.getElementById('ctName')?.value.trim();
+  const email   = document.getElementById('ctEmail')?.value.trim();
+  const message = document.getElementById('ctMessage')?.value.trim();
+
+  let valid = true;
+
+  // Clear errors
+  ['ctNameError','ctEmailError','ctMessageError'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '';
+  });
+
+  if (!name) {
+    document.getElementById('ctNameError').textContent =
+      'Please enter your name.';
+    valid = false;
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('ctEmailError').textContent =
+      'Please enter a valid email.';
+    valid = false;
+  }
+
+  if (!message) {
+    document.getElementById('ctMessageError').textContent =
+      'Please enter your message.';
+    valid = false;
+  }
+
+  if (valid) {
+    const success = document.getElementById('ctFormSuccess');
+    success.style.display = 'block';
+    contactForm.reset();
+    setTimeout(() => {
+      success.style.display = 'none';
+    }, 4000);
+  }
+});

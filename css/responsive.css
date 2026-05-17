@@ -262,6 +262,49 @@
     width: 100%;
     justify-content: center;
   }
+
+  /* Downloads table */
+  .downloads-table thead {
+    display: none;
+  }
+
+  .downloads-table tbody tr {
+    display: block;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--clr-gray-mid);
+  }
+
+  .downloads-table td {
+    display: block;
+    padding: 0.4rem 0;
+    border: none;
+  }
+
+  .col-sno { display: none; }
+
+  .col-size,
+  .col-download {
+    width: auto;
+  }
+
+  /* Contact */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .contact-heading {
+    font-size: 1.8rem;
+  }
+
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contact-map-section iframe {
+    height: 300px;
+  }
 }
 
 /* ============================================

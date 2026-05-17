@@ -534,3 +534,227 @@ contactForm?.addEventListener('submit', (e) => {
     }, 4000);
   }
 });
+
+// ============================================
+//   MULTI-STEP APPLICATION FORM
+// ============================================
+const appForm = document.getElementById('applicationForm');
+const appSuccess = document.getElementById('appSuccess');
+const stepIndicators = document.querySelectorAll('.step-indicator');
+const stepConnectors = document.querySelectorAll('.step-connector');
+const formSteps = document.querySelectorAll('.form-step');
+
+let currentStep = 1;
+const STORAGE_KEY = 'rml_application_draft';
+
+// ── Restore from localStorage on load ──
+const restoreFormData = () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return;
+
+  const data = JSON.parse(saved);
+  Object.keys(data).forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.type !== 'file' && el.type !== 'checkbox') {
+      el.value = data[id];
+    }
+  });
+};
+
+// ── Save to localStorage on any input ──
+const saveFormData = () => {
+  const fields = [
+    'appName','appFather','appMother','appDob',
+    'appGender','appMobile','appEmail','appAddress',
+    'appCourse','appQualification','appBoard',
+    'appYear','appPercent','appCategory'
+  ];
+
+  const data = {};
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
+
+// Attach save listener to all inputs
+document.querySelectorAll('.app-input').forEach(input => {
+  input.addEventListener('input', saveFormData);
+  input.addEventListener('change', saveFormData);
+});
+
+// ── Go to step ──
+const goToStep = (step) => {
+  formSteps.forEach(s => s.classList.remove('active'));
+  document.getElementById(`step${step}`).classList.add('active');
+
+  stepIndicators.forEach((ind, i) => {
+    ind.classList.remove('active', 'completed');
+    if (i + 1 === step) ind.classList.add('active');
+    if (i + 1 < step) ind.classList.add('completed');
+  });
+
+  stepConnectors.forEach((conn, i) => {
+    conn.classList.toggle('completed', i + 1 < step);
+  });
+
+  currentStep = step;
+
+  // Scroll to form top
+  document.querySelector('.application-form-wrap')
+    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+// ── Step 1 Validation ──
+const validateStep1 = () => {
+  let valid = true;
+  const errors = {
+    appName:    ['appNameError',   'Please enter student name.'],
+    appFather:  ['appFatherError', "Please enter father's name."],
+    appMother:  ['appMotherError', "Please enter mother's name."],
+    appDob:     ['appDobError',    'Please select date of birth.'],
+    appGender:  ['appGenderError', 'Please select gender.'],
+    appMobile:  ['appMobileError', 'Enter valid 10-digit mobile.'],
+    appEmail:   ['appEmailError',  'Enter a valid email address.'],
+    appAddress: ['appAddressError','Please enter your address.'],
+  };
+
+  Object.entries(errors).forEach(([id, [errId, msg]]) => {
+    const el = document.getElementById(id);
+    const errEl = document.getElementById(errId);
+    if (!el || !errEl) return;
+
+    let fieldValid = el.value.trim() !== '';
+
+    if (id === 'appMobile') {
+      fieldValid = /^\d{10}$/.test(el.value.trim());
+    }
+    if (id === 'appEmail') {
+      fieldValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(el.value.trim());
+    }
+
+    errEl.textContent = fieldValid ? '' : msg;
+    if (!fieldValid) valid = false;
+  });
+
+  return valid;
+};
+
+// ── Step 2 Validation ──
+const validateStep2 = () => {
+  let valid = true;
+  const errors = {
+    appCourse:        ['appCourseError', 'Please select a course.'],
+    appQualification: ['appQualError',   'Please select qualification.'],
+    appBoard:         ['appBoardError',  'Please enter board/university.'],
+    appYear:          ['appYearError',   'Please enter year of passing.'],
+    appPercent:       ['appPercentError','Please enter percentage/CGPA.'],
+  };
+
+  Object.entries(errors).forEach(([id, [errId, msg]]) => {
+    const el = document.getElementById(id);
+    const errEl = document.getElementById(errId);
+    if (!el || !errEl) return;
+
+    const fieldValid = el.value.trim() !== '';
+    errEl.textContent = fieldValid ? '' : msg;
+    if (!fieldValid) valid = false;
+  });
+
+  return valid;
+};
+
+// ── Step 3 Validation ──
+const validateStep3 = () => {
+  let valid = true;
+
+  const photo = document.getElementById('appPhoto');
+  const photoErr = document.getElementById('appPhotoError');
+  if (photo && photoErr) {
+    if (!photo.files || photo.files.length === 0) {
+      photoErr.textContent = 'Please upload your passport photo.';
+      valid = false;
+    } else {
+      photoErr.textContent = '';
+    }
+  }
+
+  const docs = document.getElementById('appDocs');
+  const docsErr = document.getElementById('appDocsError');
+  if (docs && docsErr) {
+    if (!docs.files || docs.files.length === 0) {
+      docsErr.textContent = 'Please upload your documents.';
+      valid = false;
+    } else {
+      docsErr.textContent = '';
+    }
+  }
+
+  const decl = document.getElementById('appDeclaration');
+  const declErr = document.getElementById('appDeclError');
+  if (decl && declErr) {
+    if (!decl.checked) {
+      declErr.textContent = 'Please accept the declaration.';
+      valid = false;
+    } else {
+      declErr.textContent = '';
+    }
+  }
+
+  return valid;
+};
+
+// ── Next buttons ──
+document.getElementById('step1Next')
+  ?.addEventListener('click', () => {
+    if (validateStep1()) goToStep(2);
+  });
+
+document.getElementById('step2Next')
+  ?.addEventListener('click', () => {
+    if (validateStep2()) goToStep(3);
+  });
+
+// ── Prev buttons ──
+document.getElementById('step2Prev')
+  ?.addEventListener('click', () => goToStep(1));
+
+document.getElementById('step3Prev')
+  ?.addEventListener('click', () => goToStep(2));
+
+// ── File upload preview ──
+document.getElementById('appPhoto')
+  ?.addEventListener('change', (e) => {
+    const preview = document.getElementById('photoPreview');
+    if (e.target.files.length > 0) {
+      preview.textContent = `✓ ${e.target.files[0].name}`;
+    }
+  });
+
+document.getElementById('appDocs')
+  ?.addEventListener('change', (e) => {
+    const preview = document.getElementById('docsPreview');
+    const files = [...e.target.files];
+    preview.textContent = files.map(f => `✓ ${f.name}`).join(' | ');
+  });
+
+// ── Form Submit ──
+appForm?.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  if (!validateStep3()) return;
+
+  // Clear localStorage on success
+  localStorage.removeItem(STORAGE_KEY);
+
+  // Hide form, show success
+  appForm.style.display = 'none';
+  document.querySelector('.step-indicators').style.display = 'none';
+  appSuccess.style.display = 'block';
+});
+
+// ── Restore data on load ──
+restoreFormData();

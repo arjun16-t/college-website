@@ -305,6 +305,28 @@
   .contact-map-section iframe {
     height: 300px;
   }
+
+  /* Application page */
+  .application-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .app-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-indicators {
+    padding: 1rem;
+  }
+
+  .step-indicator span {
+    font-size: 0.7rem;
+  }
+
+  .application-form-card {
+    padding: 1.5rem;
+  }
 }
 
 /* ============================================

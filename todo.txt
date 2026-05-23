@@ -10,3 +10,6 @@
 
 ==== COURSES.HTML ====
 1. Add All the required icons
+
+==== FOOTER ====
+1. Add "Check Application Status" link in footer

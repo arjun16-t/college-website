@@ -1,4 +1,13 @@
 // ============================================
+//   UTILITY FUNCTIONS
+// ============================================
+function getCookie(name) {
+  const cookies = document.cookie.split('; ');
+  const found = cookies.find(row => row.startsWith(name + '='));
+  return found ? found.split('=')[1] : null;
+}
+
+// ============================================
 //   NAVBAR - Scroll Shadow Effect
 // ============================================
 const header = document.getElementById('header');
@@ -245,7 +254,7 @@ const clearErrors = () => {
     });
 };
 
-enquiryForm?.addEventListener('submit', (e) => {
+enquiryForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   clearErrors();
 
@@ -253,6 +262,7 @@ enquiryForm?.addEventListener('submit', (e) => {
   const email   = document.getElementById('enqEmail').value.trim();
   const phone   = document.getElementById('enqPhone').value.trim();
   const course  = document.getElementById('enqCourse').value;
+  const message  = document.getElementById('enqMessage').value.trim();
   const captcha = parseInt(document.getElementById('captchaAnswer').value);
   const consent = document.getElementById('enqConsent').checked;
 
@@ -285,14 +295,45 @@ enquiryForm?.addEventListener('submit', (e) => {
   }
 
   if (valid) {
-    // Show success — backend will be wired later
-    document.getElementById('formSuccess').style.display = 'block';
-    enquiryForm.reset();
-    generateCaptcha();
-    setTimeout(() => {
-      document.getElementById('formSuccess').style.display = 'none';
-      closeModal();
-    }, 3000);
+    const csrftoken = getCookie('csrftoken');
+
+    const payload = {
+      name: name,
+      email: email,
+      phone: phone,
+      course: course,
+      message: message
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/enquiry/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      console.log(data)
+
+      if (response.ok) {
+        document.getElementById('formSuccess').style.display = 'block';
+        enquiryForm.reset();
+        generateCaptcha();
+        setTimeout(() => {
+          document.getElementById('formSuccess').style.display = 'none';
+          closeModal();
+        }, 3000);
+      } else {
+        showError('enqNameError', data.message || 'Something went wrong. Please try again.');
+      }
+
+    } catch (err) {
+      showError('enqNameError', 'Network error. Please check your connection.');
+      console.error(err);
+    }
   }
 });
 

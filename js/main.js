@@ -247,7 +247,7 @@ const showError = (id, msg) => {
 
 const clearErrors = () => {
   ['enqNameError','enqEmailError','enqPhoneError',
-   'enqCourseError','captchaError','enqConsentError']
+   'enqCourseError','captchaError','enqConsentError', 'enqMessageError']
     .forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = '';
@@ -327,12 +327,22 @@ enquiryForm?.addEventListener('submit', async (e) => {
           closeModal();
         }, 3000);
       } else {
-        showError('enqNameError', data.message || 'Something went wrong. Please try again.');
+        const errorMap = {
+          name: 'enqNameError',
+          email: 'enqEmailError',
+          phone: 'enqPhoneError',
+          course: 'enqCourseError',
+          message: 'enqMessageError'
+        };
+        Object.keys(data).forEach(field => {
+          if (errorMap[field]) {
+            showError(errorMap[field], data[field][0]);
+          }
+        });
       }
 
     } catch (err) {
       showError('enqNameError', 'Network error. Please check your connection.');
-      console.error(err);
     }
   }
 });

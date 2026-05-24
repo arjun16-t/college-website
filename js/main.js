@@ -596,17 +596,22 @@ noticeFilterBtns.forEach(btn => {
 // ============================================
 const contactForm = document.getElementById('contactForm');
 
-contactForm?.addEventListener('submit', (e) => {
+// const showError = (id, msg) => {
+//   document.getElementById(id).textContent = msg;
+// };
+
+contactForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const name    = document.getElementById('ctName')?.value.trim();
   const email   = document.getElementById('ctEmail')?.value.trim();
+  const subject = document.getElementById('ctSubject')?.value.trim();
   const message = document.getElementById('ctMessage')?.value.trim();
 
   let valid = true;
 
   // Clear errors
-  ['ctNameError','ctEmailError','ctMessageError'].forEach(id => {
+  ['ctNameError','ctEmailError','ctMessageError', 'ctSubjectError'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = '';
   });
@@ -623,6 +628,12 @@ contactForm?.addEventListener('submit', (e) => {
     valid = false;
   }
 
+  if (!subject) {
+    document.getElementById('ctSubjectError').textContent =
+      'Please enter a valid subject.';
+    valid = false;
+  }
+
   if (!message) {
     document.getElementById('ctMessageError').textContent =
       'Please enter your message.';
@@ -630,12 +641,51 @@ contactForm?.addEventListener('submit', (e) => {
   }
 
   if (valid) {
-    const success = document.getElementById('ctFormSuccess');
-    success.style.display = 'block';
-    contactForm.reset();
-    setTimeout(() => {
-      success.style.display = 'none';
-    }, 4000);
+    const csrftoken = getCookie('csrftoken');
+
+    const payload = {
+      name: name,
+      email: email,
+      subject: subject,
+      message: message
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/contact/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      console.log(data)
+
+      if (response.ok) {
+        document.getElementById('ctFormSuccess').style.display = 'block';
+        contactForm.reset();
+        setTimeout(() => {
+          document.getElementById('ctFormSuccess').style.display = 'none';
+        }, 3000);
+      } else {
+        const errorMap = {
+          name: 'ctNameError',
+          email: 'ctEmailError',
+          subject: 'ctSubjectError',
+          message: 'ctMessageError'
+        };
+        Object.keys(data).forEach(field => {
+          if (errorMap[field]) {
+            showError(errorMap[field], data[field][0]);
+          }
+        });
+      }
+
+    } catch (err) {
+      showError('ctNameError', 'Network error. Please check your connection.');
+    }
   }
 });
 

@@ -1,3 +1,5 @@
+const API_BASE = 'http://127.0.0.1:8000/api';
+
 // ============================================
 //   UTILITY FUNCTIONS
 // ============================================
@@ -94,7 +96,13 @@ const revealObserver = new IntersectionObserver((entries) => {
   threshold: 0.15  // trigger when 15% of element is visible
 });
 
-revealElements.forEach(el => revealObserver.observe(el));
+function observeRevealElements() {
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+    revealObserver.observe(el);
+  });
+}
+
+observeRevealElements();
 
 // ============================================
 //   STATS COUNT-UP ANIMATION
@@ -306,7 +314,7 @@ enquiryForm?.addEventListener('submit', async (e) => {
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/enquiry/', {
+      const response = await fetch(`${API_BASE}/enquiry/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -578,6 +586,8 @@ noticeFilterBtns.forEach(btn => {
 
     const filter = btn.getAttribute('data-filter');
 
+    const noticeRows = document.querySelectorAll('.notice-row');
+
     noticeRows.forEach(row => {
       const cat = row.getAttribute('data-category');
       if (filter === 'all' || cat === filter) {
@@ -590,6 +600,61 @@ noticeFilterBtns.forEach(btn => {
     });
   });
 });
+
+// ============================================
+//   NOTICES - Get from Server
+// ============================================
+async function renderNotices() {
+  try {
+    const response = await fetch(`${API_BASE}/notices`);
+    const result = await response.json();
+    const notices = result.data;
+
+    const container = document.getElementById('noticesList');
+    container.innerHTML = "";
+
+    notices.forEach((notice) => {
+      const noticeCard = document.createElement("div");
+      noticeCard.className = "notice-row reveal";
+      noticeCard.dataset.category = notice.category;
+
+      noticeCard.innerHTML = `
+        <div class="notice-left">
+            <span class="notice-tag ${notice.category}">${notice.category}</span>
+            <div class="notice-info">
+              <h3 class="notice-title">
+                ${notice.title}
+              </h3>
+              <p class="notice-desc">
+                ${notice.description}
+              </p>
+              <span class="notice-date">
+                📅 ${new Date(notice.modified_at).toLocaleDateString('en-IN', {
+                  day: 'numeric', month: 'long', year: 'numeric'
+                })}
+              </span>
+            </div>
+          </div>
+          ${notice.pdf_url 
+            ? `<a href="${notice.pdf_url}" class="notice-download">
+                <span class="download-icon">⬇</span>Download PDF
+              </a>` 
+            : ''
+          }
+      `;
+
+      container.appendChild(noticeCard);
+    });
+
+    observeRevealElements();
+  } catch (error) {
+    console.error("Error loading notices:", error);
+  }
+}
+
+if (document.getElementById('noticesList')) {
+  document.addEventListener('DOMContentLoaded', renderNotices);
+}
 
 // ============================================
 //   CONTACT FORM VALIDATION
@@ -651,7 +716,7 @@ contactForm?.addEventListener('submit', async (e) => {
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/contact/', {
+      const response = await fetch(`${API_BASE}/contact/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

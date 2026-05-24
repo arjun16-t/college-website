@@ -693,7 +693,7 @@ async function renderNotices() {
             </div>
           </div>
           ${notice.pdf_url 
-            ? `<a href="${notice.pdf_url}" class="notice-download">
+            ? `<a href="${notice.pdf_url}" class="notice- ">
                 <span class="download-icon">⬇</span>Download PDF
               </a>` 
             : ''
@@ -809,6 +809,73 @@ contactForm?.addEventListener('submit', async (e) => {
     }
   }
 });
+
+// ============================================
+//   DOWNLOADS - Get from Server
+// ============================================
+async function renderDownloads() {
+  try {
+    const response = await fetch(`${API_BASE}/downloads`);
+    const result = await response.json();
+    const downloads = result.data;
+
+    const container = document.getElementById('downloadsTableBody');
+    container.innerHTML = "";
+
+    downloads.forEach((item, index) => {
+      const downloadCard = document.createElement("tr");
+
+      downloadCard.innerHTML = `
+        <td class="col-sno">${index+1}</td>
+        <td class="col-name">
+        <div class="doc-name-wrap">
+            <div class="doc-icon-sm">
+            <svg viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 
+                0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+            </div>
+            <div>
+            <p class="doc-title">${item.title}</p>
+            <p class="doc-subtitle">
+              ${item.description}
+            </p>
+            </div>
+        </div>
+        </td>
+        <td class="col-size">
+        <span class="size-tag">PDF • ${item.file_size}</span>
+        </td>
+        <td class="col-download">
+        <a href="${item.file_url}" class="download-btn">
+            <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5"
+            width="16" height="16">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 
+            0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download
+        </a>
+        </td>
+      `;
+
+      container.appendChild(downloadCard);
+    });
+
+  } catch (error) {
+    console.error("Error loading notices:", error);
+  }
+}
+
+if (document.getElementById('downloadsTableBody')) {
+  document.addEventListener('DOMContentLoaded', renderDownloads);
+}
 
 // ============================================
 //   MULTI-STEP APPLICATION FORM

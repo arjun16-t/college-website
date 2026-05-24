@@ -469,107 +469,164 @@ if (courseSections.length > 0) {
 //   GALLERY - Filter + Lightbox
 // ============================================
 const filterBtns = document.querySelectorAll('.gallery-filter-btn');
-const galleryItems = document.querySelectorAll('.gallery-item');
-const lightbox = document.getElementById('lightbox');
-const lightboxClose = document.getElementById('lightboxClose');
-const lightboxPrev = document.getElementById('lightboxPrev');
-const lightboxNext = document.getElementById('lightboxNext');
-const lightboxLabel = document.getElementById('lightboxLabel');
-const lightboxCaption = document.getElementById('lightboxCaption');
 
-let currentIndex = 0;
-let visibleItems = [];
+function initGalleryFilters() {
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-// ── Filter ──
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Update active button
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      const galleryItems = document.querySelectorAll('.gallery-item');
 
-    const filter = btn.getAttribute('data-filter');
+      galleryItems.forEach(item => {
+        const cat = item.getAttribute('data-category');
+        if (filter === 'all' || cat === filter) {
+          item.classList.remove('hidden');
+          item.classList.add('fade-in');
+          setTimeout(() => item.classList.remove('fade-in'), 400);
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+}
 
-    galleryItems.forEach(item => {
-      const cat = item.getAttribute('data-category');
-      if (filter === 'all' || cat === filter) {
-        item.classList.remove('hidden');
-        item.classList.add('fade-in');
-        setTimeout(() => item.classList.remove('fade-in'), 400);
-      } else {
-        item.classList.add('hidden');
-      }
+// ── Lightbox (runs after gallery is rendered) ──
+function initLightbox() {
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
+  const lightboxLabel = document.getElementById('lightboxLabel');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+
+  let currentIndex = 0;
+  let visibleItems = [];
+
+  const updateVisibleItems = () => {
+    visibleItems = [...galleryItems].filter(
+      item => !item.classList.contains('hidden')
+    );
+  };
+
+  updateVisibleItems();
+
+  galleryItems.forEach(item => {
+    item.addEventListener('click', () => {
+      currentIndex = visibleItems.indexOf(item);
+      showLightbox();
+    });
+  });
+
+  const showLightbox = () => {
+    const item = visibleItems[currentIndex];
+    const caption = item?.querySelector('span')?.textContent || '';
+    const imgSrc = item?.querySelector('img')?.src || '';
+
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxPlaceholder = document.getElementById('lightboxPlaceholder');
+
+    lightboxImg.src = imgSrc;
+    lightboxLabel.textContent = caption;
+    lightboxCaption.textContent = caption;
+    
+    // Show image if src exists, otherwise show placeholder
+    if (imgSrc) {
+      lightboxImg.style.display = 'block';
+      lightboxPlaceholder.style.display = 'none';
+    } else {
+      lightboxImg.style.display = 'none';
+      lightboxPlaceholder.style.display = 'flex';
+    }
+
+
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  const navigateLightbox = (direction) => {
+    currentIndex = (currentIndex + direction + visibleItems.length)
+      % visibleItems.length;
+    const caption = visibleItems[currentIndex]
+      ?.querySelector('span')?.textContent || '';
+    lightboxLabel.textContent = caption;
+    lightboxCaption.textContent = caption;
+
+    const imgSrc = visibleItems[currentIndex]?.querySelector('img')?.src || '';
+    document.getElementById('lightboxImg').src = imgSrc;
+  };
+
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxNext?.addEventListener('click', () => navigateLightbox(1));
+  lightboxPrev?.addEventListener('click', () => navigateLightbox(-1));
+
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox?.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') navigateLightbox(1);
+    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+  });
+}
+
+// ============================================
+//   GALLERY - Get from Server
+// ============================================
+
+async function renderGallery() {
+  try {
+    const response = await fetch(`${API_BASE}/gallery`);
+    const result = await response.json();
+    const gallery = result.data;
+
+    const layouts = ['', '', 'tall', 'wide', ''];
+
+    const container = document.getElementById('galleryGrid');
+    container.innerHTML = "";
+
+    gallery.forEach((item, index) => {
+      const layout = layouts[index % layouts.length];
+      const galleryCard = document.createElement("div");
+
+      galleryCard.className = `gallery-item ${layout} reveal`.trim();
+      galleryCard.dataset.category = item.category;
+      galleryCard.dataset.index = index
+
+
+      galleryCard.innerHTML = `
+        <div class="gallery-placeholder">
+          <img src="${item.image_url}"/>
+          <span>${item.title}</span>
+        </div>
+      `;
+
+      container.appendChild(galleryCard);
     });
 
-    // Update visible items for lightbox
-    updateVisibleItems();
+    observeRevealElements();
+    initLightbox();
+  } catch (error) {
+    console.error("Error loading gallery:", error);
+  }
+}
+
+if (document.getElementById('galleryGrid')) {
+  document.addEventListener('DOMContentLoaded', () => {
+    initGalleryFilters();
+    renderGallery();
   });
-});
-
-// ── Update visible items list ──
-const updateVisibleItems = () => {
-  visibleItems = [...galleryItems].filter(
-    item => !item.classList.contains('hidden')
-  );
-};
-
-// Initial visible items
-updateVisibleItems();
-
-// ── Open Lightbox ──
-galleryItems.forEach(item => {
-  item.addEventListener('click', () => {
-    const index = parseInt(item.getAttribute('data-index'));
-    const label = item.querySelector('span')?.textContent || '';
-
-    // Find position in visible items
-    currentIndex = visibleItems.indexOf(item);
-
-    showLightbox(label);
-  });
-});
-
-const showLightbox = (label) => {
-  const item = visibleItems[currentIndex];
-  const caption = item?.querySelector('span')?.textContent || '';
-
-  lightboxLabel.textContent = caption;
-  lightboxCaption.textContent = caption;
-
-  lightbox.classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-
-// ── Close Lightbox ──
-const closeLightbox = () => {
-  lightbox.classList.remove('open');
-  document.body.style.overflow = '';
-};
-
-lightboxClose?.addEventListener('click', closeLightbox);
-
-lightbox?.addEventListener('click', (e) => {
-  if (e.target === lightbox) closeLightbox();
-});
-
-document.addEventListener('keydown', (e) => {
-  if (!lightbox?.classList.contains('open')) return;
-  if (e.key === 'Escape') closeLightbox();
-  if (e.key === 'ArrowRight') navigateLightbox(1);
-  if (e.key === 'ArrowLeft') navigateLightbox(-1);
-});
-
-// ── Navigate Lightbox ──
-const navigateLightbox = (direction) => {
-  currentIndex = (currentIndex + direction + visibleItems.length)
-    % visibleItems.length;
-  const caption = visibleItems[currentIndex]
-    ?.querySelector('span')?.textContent || '';
-  lightboxLabel.textContent = caption;
-  lightboxCaption.textContent = caption;
-};
-
-lightboxNext?.addEventListener('click', () => navigateLightbox(1));
-lightboxPrev?.addEventListener('click', () => navigateLightbox(-1));
+}
 
 // ============================================
 //   NOTICES - Filter
@@ -655,7 +712,6 @@ async function renderNotices() {
 if (document.getElementById('noticesList')) {
   document.addEventListener('DOMContentLoaded', renderNotices);
 }
-
 // ============================================
 //   CONTACT FORM VALIDATION
 // ============================================

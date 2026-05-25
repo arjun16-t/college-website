@@ -1,3 +1,4 @@
+console.log("PAGE LOADED");
 const API_BASE = 'http://127.0.0.1:8000/api';
 
 // ============================================
@@ -887,6 +888,11 @@ const stepConnectors = document.querySelectorAll('.step-connector');
 const formSteps = document.querySelectorAll('.form-step');
 
 let currentStep = 1;
+if (sessionStorage.getItem('applicationSubmitted') === 'true') {
+  appForm.style.display = 'none';
+  document.querySelector('.step-indicators').style.display = 'none';
+  appSuccess.style.display = 'block';
+}
 const STORAGE_KEY = 'rml_application_draft';
 
 // ── Restore from localStorage on load ──
@@ -1059,7 +1065,7 @@ const validateStep3 = () => {
 
 // ── Step 4 — OTP Validation ──
 const validateStep4 = () => {
-  const otp = document.getElementById('otpInput')?.value.trim();
+  const otp = String(document.getElementById('otpInput')?.value.trim());
   const otpErr = document.getElementById('otpError');
 
   if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
@@ -1081,19 +1087,196 @@ document.getElementById('step2Next')
     if (validateStep2()) goToStep(3);
   });
 
-document.getElementById('step3Next')
-  ?.addEventListener('click', () => {
-    if (validateStep3()) {
-      // Show email in OTP step
-      const email = document.getElementById('appEmail')?.value;
-      const otpEmailDisplay = document.getElementById('otpEmailDisplay');
-      if (otpEmailDisplay) otpEmailDisplay.textContent = email;
+async function applyApplication() {
+    // 1. Build FormData
+    const formData = new FormData();
 
-      // Start countdown
-      startOtpCountdown();
-      goToStep(4);
+    // 2. Append text fields
+    formData.append('student_name', document.getElementById('appName').value.trim());
+    formData.append('father_name', document.getElementById('appFather').value.trim());
+    formData.append('mother_name', document.getElementById('appMother').value.trim());
+    formData.append('date_of_birth', document.getElementById('appDob').value);
+    formData.append('gender', document.getElementById('appGender').value);
+    formData.append('phone', document.getElementById('appMobile').value.trim());
+    formData.append('email', document.getElementById('appEmail').value.trim());
+    formData.append('address', document.getElementById('appAddress').value.trim());
+    formData.append('course', document.getElementById('appCourse').value);
+    formData.append('educational_qualification', document.getElementById('appQualification').value);
+    formData.append('institution', document.getElementById('appBoard').value.trim());
+    formData.append('year_passing', document.getElementById('appYear').value);
+    formData.append('percentage', document.getElementById('appPercent').value.replace('%', ''));
+    formData.append('caste', document.getElementById('appCategory').value);
+
+    // 3. Append files
+    formData.append('passport_photo', document.getElementById('appPassportPhoto').files[0]);
+    formData.append('marksheet_10', document.getElementById('appMarksheet10').files[0]);
+    formData.append('marksheet_12', document.getElementById('appMarksheet12').files[0]);
+
+    // --- Helper: Clear previous form errors before new submission ---
+    const clearFormErrors = () => {
+        const errorIds = [
+            'appNameError', 'appFatherError', 'appMotherError', 'appDobError',
+            'appGenderError', 'appMobileError', 'appEmailError', 'appAddressError',
+            'appCourseError', 'appQualError', 'appBoardError', 'appYearError',
+            'appPercentError', 'appPhotoError', 'appMarksheet10Error', 'appMarksheet12Error',
+            'appDeclError' 
+        ];
+        errorIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '';
+        });
+    };
+
+    // 4. Call POST /api/apply/
+    try {
+      clearFormErrors();
+      const csrftoken = getCookie('csrftoken');
+
+      const response = await fetch(`${API_BASE}/apply/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        startOtpCountdown();
+        goToStep(4);
+        return true;
+      } else {
+        const errorMap = {
+            student_name: 'appNameError',
+            father_name: 'appFatherError',
+            mother_name: 'appMotherError',
+            date_of_birth: 'appDobError',
+            gender: 'appGenderError',
+            phone: 'appMobileError',
+            email: 'appEmailError',
+            address: 'appAddressError',
+            course: 'appCourseError',
+            educational_qualification: 'appQualError',
+            institution: 'appBoardError',
+            year_passing: 'appYearError',
+            percentage: 'appPercentError',
+            passport_photo: 'appPhotoError',
+            marksheet_10: 'appMarksheet10Error',
+            marksheet_12: 'appMarksheet12Error',
+            non_field_errors: 'appDeclError', // Catches DRF root level validate() errors
+            error: 'appDeclError' // Catches custom dictionary errors from views.py
+        };
+
+        let hasSpecificError = false;
+
+        // Iterate over the DRF error dictionary and populate the correct spans
+        Object.keys(data).forEach(field => {
+            const errorElementId = errorMap[field];
+            if (errorElementId) {
+                const errorElement = document.getElementById(errorElementId);
+                if (errorElement) {
+                    // DRF returns arrays [0], custom views might return strings
+                    const errorMsg = Array.isArray(data[field]) ? data[field][0] : data[field];
+                    errorElement.textContent = errorMsg;
+                    hasSpecificError = true;
+                }
+            }
+        });
+
+        // Fallback if the backend returns an error format we didn't explicitly map
+        if (!hasSpecificError) {
+            document.getElementById('appDeclError').textContent = 'Please check the form for invalid entries.';
+        }
+        return false;
+      }
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById('appDeclError').textContent =
+      'Network error. Please check your connection.';
+      return false;
+    }
+}
+document.getElementById('step3Next')
+  ?.addEventListener('click', async () => {
+    if (!validateStep3()) return;
+    
+    const btn = document.getElementById('step3Next');
+
+    btn.disabled = true;
+    btn.textContent = 'Sending OTP...';
+    
+    const success = await applyApplication();
+    
+    // If it failed, reset the button so they can fix errors and try again
+    if (!success) {
+      btn.disabled = false;
+      btn.textContent = 'Next Step →';
     }
   });
+
+async function verifyAndSubmit() {
+  const csrftoken = getCookie('csrftoken');
+  const email = document.getElementById('appEmail').value.trim();
+  const otp = document.getElementById('otpInput').value.trim();
+  const otpError = document.getElementById('otpError');
+
+  if (!validateStep4()) return;
+
+  try {
+    // Step 1 — Verify OTP
+    const verifyResponse = await fetch(`${API_BASE}/verify-otp/`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify({ email, otp })
+    });
+
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyResponse.ok) {
+      otpError.textContent = verifyData.error || 'Invalid OTP. Please try again.';
+      return;
+    }
+
+    // Step 2 — Submit application
+    const submitData = new FormData();
+    submitData.append('email', email);
+    submitData.append('passport_photo', document.getElementById('appPassportPhoto').files[0]);
+    submitData.append('marksheet_10', document.getElementById('appMarksheet10').files[0]);
+    submitData.append('marksheet_12', document.getElementById('appMarksheet12').files[0]);
+
+    const submitResponse = await fetch(`${API_BASE}/submit/`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'X-CSRFToken': csrftoken },
+      body: submitData
+    });
+
+    const submitResult = await submitResponse.json();
+
+    if (!submitResponse.ok) {
+      otpError.textContent = submitResult.error || 'Submission failed. Please try again.';
+      return;
+    }
+
+    // Success
+    localStorage.removeItem(STORAGE_KEY);
+
+    sessionStorage.setItem('applicationSubmitted', 'true');
+
+    appForm.style.display = 'none';
+    document.querySelector('.step-indicators').style.display = 'none';
+    appSuccess.style.display = 'block';
+
+  } catch (err) {
+    console.error('Error:', err);
+    otpError.textContent = 'Network error. Please check your connection.';
+  }
+}
 
 // ── Prev buttons ──
 document.getElementById('step2Prev')
@@ -1136,14 +1319,42 @@ const startOtpCountdown = () => {
   }, 1000);
 };
 
+async function resendOtp() {
+  const csrftoken = getCookie('csrftoken');
+  const student_name = document.getElementById('appName').value.trim();
+  const email = document.getElementById('appEmail').value.trim();
+  const otpError = document.getElementById('otpError');
+
+  try {
+    const retryResponse = await fetch(`${API_BASE}/resend-otp/`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type':'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify({email, student_name})
+    });
+
+    const retryData = await retryResponse.json();
+    if (!retryResponse.ok) {
+      otpError.textContent = retryData.error || 'Invalid OTP. Please try again.';
+      return false;
+    }
+
+    if (retryResponse.ok) {
+      startOtpCountdown();
+    }
+  } catch (err) {
+      console.log(err);
+      otpError.textContent = 'Network error. Please try again.';
+  }
+}
+
 // ── Resend OTP button ──
 document.getElementById('resendOtpBtn')
-  ?.addEventListener('click', () => {
-    // Restart countdown
-    startOtpCountdown();
-
-    // Will be wired to API in next phase
-    console.log('Resend OTP clicked — will wire to API');
+  ?.addEventListener('click', async () => {
+    await resendOtp();
   });
 
 // ── File upload preview ──
@@ -1166,15 +1377,24 @@ document.getElementById('appMarksheet12')
   });
 
 // ── Form Submit ──
-appForm?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (!validateStep4()) return;
+document.getElementById('appSubmit')
+  ?.addEventListener('click', async () => {
+    await verifyAndSubmit();
+  });
 
-  // Will be wired to API in next phase
+document.getElementById('applyAnotherBtn')?.addEventListener('click', () => {
+  // 1. Clear the success state
+  sessionStorage.removeItem('applicationSubmitted');
+  
+  // 2. Clear the form draft data just to be safe
   localStorage.removeItem(STORAGE_KEY);
-  appForm.style.display = 'none';
-  document.querySelector('.step-indicators').style.display = 'none';
-  appSuccess.style.display = 'block';
+  
+  // 3. Reset the UI back to Step 1
+  appSuccess.style.display = 'none';
+  appForm.style.display = 'block';
+  document.querySelector('.step-indicators').style.display = 'flex';
+  appForm.reset();
+  goToStep(1);
 });
 
 // ── Restore data on load ──

@@ -3765,28 +3765,70 @@ p {
   margin: 0 auto 2rem;
 }
 
-.otp-screen {
-  padding: 2rem;
+/* ============================================
+   OTP STEP STYLES
+   ============================================ */
+.otp-email-display {
+  background-color: var(--clr-gray-light);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--clr-primary);
+}
+
+.otp-email-display p {
+  font-size: 0.95rem;
+  color: var(--clr-gray-text);
+  margin: 0;
+}
+
+.otp-email-display strong {
+  color: var(--clr-primary);
+}
+
+.otp-input-wrap {
+  margin-bottom: 1.5rem;
+}
+
+.otp-input {
+  font-size: 1.8rem;
+  letter-spacing: 0.5rem;
   text-align: center;
+  font-weight: 700;
+  color: var(--clr-primary);
 }
 
-.otp-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.otp-resend-wrap {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.otp-note {
-  margin-top: 1rem;
-  font-size: 0.85rem;
-  color: var(--clr-text-light);
+.otp-resend-text {
+  font-size: 0.92rem;
+  color: var(--clr-gray-text);
+  margin-bottom: 0.4rem;
 }
 
-.otp-screen .app-form-group {
-  max-width: 300px;
-  margin: 1.5rem auto;
+.otp-resend-btn {
+  background: none;
+  border: none;
+  color: var(--clr-primary);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: var(--transition);
+  text-decoration: underline;
 }
 
-.otp-screen .step-actions {
-  justify-content: center;
-  gap: 1rem;
+.otp-resend-btn:disabled {
+  color: var(--clr-gray-text);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.otp-countdown {
+  font-size: 0.82rem;
+  color: var(--clr-gray-text);
+  margin: 0;
 }

@@ -517,46 +517,81 @@
                     id="step3Prev">
                     ← Previous
                   </button>
-                  <button type="submit"
+                  <button type="button"
                     class="btn btn-primary"
-                    id="appSubmit">
+                    id="step3Next">
+                    Next Step →
+                  </button>
+                </div>
+              </div>
+
+              <!-- STEP 4: OTP Verification -->
+              <div class="form-step" id="step4">
+                <h3 class="step-title">Verify Your Email</h3>
+                <p class="step-subtitle">
+                  An OTP has been sent to your registered email address.
+                  Please enter it below to complete your application.
+                </p>
+
+                <!-- Email display -->
+                <div class="otp-email-display">
+                  <p>OTP sent to: <strong id="otpEmailDisplay"></strong></p>
+                </div>
+
+                <!-- OTP Input -->
+                <div class="otp-input-wrap">
+                  <div class="app-form-group full">
+                    <label class="app-label">Enter 6-digit OTP *</label>
+                    <input
+                      type="number"
+                      id="otpInput"
+                      class="app-input otp-input"
+                      placeholder="_ _ _ _ _ _"
+                      maxlength="6"
+                      autocomplete="one-time-code"
+                    />
+                    <span class="form-error" id="otpError"></span>
+                  </div>
+                </div>
+
+                <!-- Resend OTP -->
+                <div class="otp-resend-wrap">
+                  <p class="otp-resend-text">
+                    Didn't receive OTP?
+                    <button
+                      type="button"
+                      class="otp-resend-btn"
+                      id="resendOtpBtn"
+                      disabled
+                    >
+                      Resend OTP
+                    </button>
+                  </p>
+                  <p class="otp-countdown" id="otpCountdown">
+                    Resend available in <span id="countdownSeconds">30</span>s
+                  </p>
+                </div>
+
+                <!-- Step Actions -->
+                <div class="step-actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline step-prev"
+                    id="step4Prev"
+                  >
+                    ← Previous
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="appSubmit"
+                  >
                     Submit Application ✓
                   </button>
                 </div>
               </div>
 
             </form>
-            <!-- OTP Verification -->
-            <div class="otp-screen" id="otpScreen" style="display:none;">
-              <div class="otp-icon">📧</div>
-              <h3 class="step-title">Verify Your Email</h3>
-              <p class="step-subtitle">
-                We've sent a 6-digit OTP to 
-                <strong id="otpEmail"></strong>
-              </p>
-
-              <div class="app-form-group">
-                <input 
-                  type="text" 
-                  id="otpInput" 
-                  class="app-input" 
-                  placeholder="Enter 6-digit OTP"
-                  maxlength="6"
-                />
-                <span class="form-error" id="otpError"></span>
-              </div>
-
-              <div class="step-actions">
-                <button type="button" class="btn btn-outline" id="otpResend">
-                  Resend OTP
-                </button>
-                <button type="button" class="btn btn-primary" id="otpVerify">
-                  Verify & Submit
-                </button>
-              </div>
-
-              <p class="otp-note">OTP expires in 10 minutes.</p>
-            </div>
             <!-- Success State -->
             <div class="app-success" id="appSuccess">
               <div class="app-success-icon">✓</div>

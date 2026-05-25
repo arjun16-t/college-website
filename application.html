@@ -162,6 +162,11 @@
               <div class="step-dot">3</div>
               <span>Documents</span>
             </div>
+            <div class="step-connector"></div>
+            <div class="step-indicator" data-step="4">
+              <div class="step-dot">4</div>
+              <span>Verify Otp</span>
+            </div>
           </div>
 
           <!-- Form Card -->
@@ -225,9 +230,9 @@
                     <label class="app-label">Gender *</label>
                     <select id="appGender" class="app-input">
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                      <option value="O">Other</option>
                     </select>
                     <span class="form-error"
                       id="appGenderError"></span>
@@ -297,16 +302,16 @@
                     </label>
                     <select id="appCourse" class="app-input">
                       <option value="">Select Programme</option>
-                      <option value="bed">
+                      <option value="B. Ed">
                         Bachelor of Education (B.Ed)
                       </option>
-                      <option value="bsc-nursing">
+                      <option value="B. Sc Nursing">
                         B.Sc Nursing
                       </option>
-                      <option value="dpharma">
+                      <option value="D. Pharma">
                         Diploma in Pharmacy (D.Pharma)
                       </option>
-                      <option value="bnys">
+                      <option value="BNYS">
                         BNYS
                       </option>
                     </select>
@@ -323,14 +328,20 @@
                       <option value="">
                         Select Qualification
                       </option>
-                      <option value="class12">
-                        Class 12 (10+2)
+                      <option value="10th">
+                        Class 10 - Secondary School Certificate
                       </option>
-                      <option value="graduation">
-                        Graduation
+                      <option value="12th">
+                        Class 12 - Higher Secondary Certificate
                       </option>
-                      <option value="postgraduation">
-                        Post Graduation
+                      <option value="D">
+                        Diploma
+                      </option>
+                      <option value="UG">
+                        Undergraduate Degree
+                      </option>
+                      <option value="PG">
+                        Postgraduate Degree
                       </option>
                     </select>
                     <span class="form-error"
@@ -376,11 +387,11 @@
                     <select id="appCategory"
                       class="app-input">
                       <option value="">Select Category</option>
-                      <option value="general">General</option>
-                      <option value="obc">OBC</option>
-                      <option value="sc">SC</option>
-                      <option value="st">ST</option>
-                      <option value="ews">EWS</option>
+                      <option value="GEN">General</option>
+                      <option value="OBC">OBC</option>
+                      <option value="SC">SC</option>
+                      <option value="ST">ST</option>
+                      <option value="EWS">EWS</option>
                     </select>
                   </div>
 
@@ -415,7 +426,7 @@
                       Passport Size Photo *
                     </label>
                     <div class="upload-area" id="photoUpload">
-                      <input type="file" id="appPhoto"
+                      <input type="file" id="appPassportPhoto"
                         accept="image/*"
                         class="upload-input" />
                       <div class="upload-placeholder">
@@ -434,26 +445,52 @@
 
                   <div class="app-form-group full">
                     <label class="app-label">
-                      Academic Documents *
+                      10th Marksheet *
                     </label>
-                    <div class="upload-area" id="docsUpload">
-                      <input type="file" id="appDocs"
+
+                    <div class="upload-area" id="marksheet10Upload">
+                      <input type="file" id="appMarksheet10"
                         accept=".pdf,.jpg,.png"
-                        multiple
                         class="upload-input" />
                       <div class="upload-placeholder">
                         <span class="upload-icon">📄</span>
                         <p>Click to upload documents</p>
                         <span class="upload-hint">
-                          PDF, JPG, PNG — Marksheets, 
-                          Certificates (Max 5MB each)
+                          PDF, JPG, PNG — 10th Marksheet, 
+                          (Max 5MB each)
                         </span>
                       </div>
                       <div class="upload-preview"
-                        id="docsPreview"></div>
+                        id="marksheet10Preview"></div>
                     </div>
+
                     <span class="form-error"
-                      id="appDocsError"></span>
+                      id="appMarksheet10Error"></span>
+                  </div>
+
+                  <div class="app-form-group full">
+                    <label class="app-label">
+                      12th Marksheet *
+                    </label>
+
+                    <div class="upload-area" id="marksheet12Upload">
+                      <input type="file" id="appMarksheet12"
+                        accept=".pdf,.jpg,.png"
+                        class="upload-input" />
+                      <div class="upload-placeholder">
+                        <span class="upload-icon">📄</span>
+                        <p>Click to upload documents</p>
+                        <span class="upload-hint">
+                          PDF, JPG, PNG — 12th Marksheet, 
+                          (Max 5MB each)
+                        </span>
+                      </div>
+                      <div class="upload-preview"
+                        id="marksheet12Preview"></div>
+                    </div>
+
+                    <span class="form-error"
+                      id="appMarksheet12Error"></span>
                   </div>
 
                 </div>
@@ -489,7 +526,37 @@
               </div>
 
             </form>
+            <!-- OTP Verification -->
+            <div class="otp-screen" id="otpScreen" style="display:none;">
+              <div class="otp-icon">📧</div>
+              <h3 class="step-title">Verify Your Email</h3>
+              <p class="step-subtitle">
+                We've sent a 6-digit OTP to 
+                <strong id="otpEmail"></strong>
+              </p>
 
+              <div class="app-form-group">
+                <input 
+                  type="text" 
+                  id="otpInput" 
+                  class="app-input" 
+                  placeholder="Enter 6-digit OTP"
+                  maxlength="6"
+                />
+                <span class="form-error" id="otpError"></span>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-outline" id="otpResend">
+                  Resend OTP
+                </button>
+                <button type="button" class="btn btn-primary" id="otpVerify">
+                  Verify & Submit
+                </button>
+              </div>
+
+              <p class="otp-note">OTP expires in 10 minutes.</p>
+            </div>
             <!-- Success State -->
             <div class="app-success" id="appSuccess">
               <div class="app-success-icon">✓</div>

@@ -3764,3 +3764,29 @@ p {
   max-width: 450px;
   margin: 0 auto 2rem;
 }
+
+.otp-screen {
+  padding: 2rem;
+  text-align: center;
+}
+
+.otp-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.otp-note {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--clr-text-light);
+}
+
+.otp-screen .app-form-group {
+  max-width: 300px;
+  margin: 1.5rem auto;
+}
+
+.otp-screen .step-actions {
+  justify-content: center;
+  gap: 1rem;
+}

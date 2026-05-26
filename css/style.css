@@ -889,9 +889,10 @@ p {
   width: fit-content;
 }
 
-.news-tag.admission { background-color: var(--clr-primary); }
-.news-tag.event     { background-color: #1565c0; }
-.news-tag.notice    { background-color: #2e7d32; }
+.news-tag.admission   { background-color: var(--clr-primary); }
+.news-tag.exam        { background-color: #1565c0; }
+.news-tag.events      { background-color: #2e7d32; }
+.news-tag.general     { background-color: #6d4c41; }
 
 .news-date {
   font-size: 0.85rem;

@@ -144,53 +144,102 @@ const statsSection = document.querySelector('.stats-section');
 if (statsSection) statObserver.observe(statsSection);
 
 // ============================================
+//   NOTICES HOME - Get Latest from server
+// ============================================
+async function renderNoticeCarousel() {
+  try {
+    const response = await fetch(`${API_BASE}/notices/latest`);
+    const result = await response.json();
+    const notices = result.data;
+
+    const container = document.getElementById('newsSlides');
+    container.innerHTML = "";
+
+    notices.forEach((notice, index) => {
+      const noticeCard = document.createElement("div");
+      noticeCard.className = `news-slide ${index === 0 ? 'active' : ''}`.trim();
+
+      noticeCard.innerHTML = `
+        <div class="news-slide-text">
+          <span class="news-tag ${notice.category}">${notice.category}</span>
+          <p class="news-date">📅 ${new Date(notice.modified_at).toLocaleDateString('en-IN', {
+                  day: 'numeric', month: 'long', year: 'numeric'
+                })}</p>
+          <h3 class="news-slide-title">
+          ${notice.title}
+          </h3>
+          <p class="news-slide-excerpt">
+          ${notice.description}
+          </p>
+          <a href="notices.html" class="btn btn-primary">Read More</a>
+        </div>
+        <div class="news-slide-image">
+          <img src="images/news-1.jpg" alt="${notice.title}" />
+        </div>
+      `;
+
+      container.appendChild(noticeCard);
+    });
+
+    observeRevealElements();
+
+    const slides = document.querySelectorAll('.news-slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('newsPrev');
+    const nextBtn = document.getElementById('newsNext');
+
+    let currentSlide = 0;
+
+    const goToSlide = (index) => {
+      // Remove active from all
+      slides.forEach(s => s.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+
+      // Add active to target
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentSlide = index;
+    };
+
+    // Arrow navigation
+    if (prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
+        const prev = (currentSlide - 1 + slides.length) % slides.length;
+        goToSlide(prev);
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const next = (currentSlide + 1) % slides.length;
+        goToSlide(next);
+      });
+    }
+
+    // Dot navigation
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        goToSlide(parseInt(dot.getAttribute('data-index')));
+      });
+    });
+
+    // Auto-play every 5 seconds
+    if (slides.length > 0) {
+      const autoPlay = setInterval(() => {
+        const next = (currentSlide + 1) % slides.length;
+        goToSlide(next);
+      }, 5000);
+    }
+  } catch (error) {
+    console.error("Error loading notices:", error);
+  }
+}
+
+if (document.getElementById('newsSlides')) {
+  document.addEventListener('DOMContentLoaded', renderNoticeCarousel);
+}
+
+// ============================================
 //   NEWS CAROUSEL
 // ============================================
-const slides = document.querySelectorAll('.news-slide');
-const dots = document.querySelectorAll('.dot');
-const prevBtn = document.getElementById('newsPrev');
-const nextBtn = document.getElementById('newsNext');
-
-let currentSlide = 0;
-
-const goToSlide = (index) => {
-  // Remove active from all
-  slides.forEach(s => s.classList.remove('active'));
-  dots.forEach(d => d.classList.remove('active'));
-
-  // Add active to target
-  slides[index].classList.add('active');
-  dots[index].classList.add('active');
-  currentSlide = index;
-};
-
-// Arrow navigation
-if (prevBtn && nextBtn) {
-  prevBtn.addEventListener('click', () => {
-    const prev = (currentSlide - 1 + slides.length) % slides.length;
-    goToSlide(prev);
-  });
-
-  nextBtn.addEventListener('click', () => {
-    const next = (currentSlide + 1) % slides.length;
-    goToSlide(next);
-  });
-}
-
-// Dot navigation
-dots.forEach(dot => {
-  dot.addEventListener('click', () => {
-    goToSlide(parseInt(dot.getAttribute('data-index')));
-  });
-});
-
-// Auto-play every 5 seconds
-if (slides.length > 0) {
-  const autoPlay = setInterval(() => {
-    const next = (currentSlide + 1) % slides.length;
-    goToSlide(next);
-  }, 5000);
-}
 
 // ============================================
 //   ENQUIRY MODAL

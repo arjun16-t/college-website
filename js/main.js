@@ -937,7 +937,12 @@ const stepConnectors = document.querySelectorAll('.step-connector');
 const formSteps = document.querySelectorAll('.form-step');
 
 let currentStep = 1;
-if (sessionStorage.getItem('applicationSubmitted') === 'true') {
+if (
+  sessionStorage.getItem('applicationSubmitted') === 'true' &&
+  appForm &&
+  appSuccess &&
+  document.querySelector('.step-indicators')
+) {
   appForm.style.display = 'none';
   document.querySelector('.step-indicators').style.display = 'none';
   appSuccess.style.display = 'block';
@@ -1448,3 +1453,115 @@ document.getElementById('applyAnotherBtn')?.addEventListener('click', () => {
 
 // ── Restore data on load ──
 restoreFormData();
+
+// ============================================
+//   APPLICATION STATUS CHECK
+// ============================================
+const checkStatusBtn = document.getElementById('checkStatusBtn');
+const statusFormCard = document.getElementById('statusFormCard');
+const statusResult = document.getElementById('statusResult');
+const checkAnotherBtn = document.getElementById('checkAnotherBtn');
+
+const showStatusResult = (data) => {
+  // Hide form, show result
+  statusFormCard.style.display = 'none';
+  statusResult.style.display = 'block';
+
+  // Hide all status sections first
+  document.querySelectorAll('.status-result')
+    .forEach(el => el.classList.remove('show'));
+
+  // Show correct status section
+  const statusMap = { P: 'Pending', A: 'Accepted', R: 'Rejected' };
+  const statusKey = Object.keys(statusMap).find(
+    k => statusMap[k] === data.status
+  );
+
+  const resultId = {
+    P: 'resultPending',
+    A: 'resultAccepted',
+    R: 'resultRejected'
+  }[statusKey];
+
+  const resultEl = document.getElementById(resultId);
+  if (resultEl) {
+    resultEl.classList.add('show');
+    resultEl.querySelector('.status-result-message')
+      .textContent = data.status_message;
+  }
+
+  // Fill details table
+  document.getElementById('resultAppId').textContent =
+    data.application_id;
+  document.getElementById('resultName').textContent =
+    data.student_name;
+  document.getElementById('resultCourse').textContent =
+    data.course;
+  document.getElementById('resultSubmitted').textContent =
+    data.submitted_on;
+  document.getElementById('resultUpdated').textContent =
+    data.last_updated;
+};
+
+checkStatusBtn?.addEventListener('click', async () => {
+  const appId = document.getElementById('statusAppId')?.value.trim();
+  const email = document.getElementById('statusEmail')?.value.trim();
+  const appIdErr = document.getElementById('statusAppIdError');
+  const emailErr = document.getElementById('statusEmailError');
+
+  // Clear errors
+  if (appIdErr) appIdErr.textContent = '';
+  if (emailErr) emailErr.textContent = '';
+
+  // Validate
+  let valid = true;
+  if (!appId) {
+    appIdErr.textContent = 'Please enter your Application ID.';
+    valid = false;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailErr.textContent = 'Please enter a valid email address.';
+    valid = false;
+  }
+  if (!valid) return;
+
+  // Show loading state
+  checkStatusBtn.textContent = 'Checking...';
+  checkStatusBtn.disabled = true;
+
+  try {
+    console.log("asd");
+
+    const response = await fetch(
+      `${API_BASE}/application-status/?id=${appId}&email=${encodeURIComponent(email)}`,
+      { credentials: 'include' }
+    );
+    console.log(response);
+
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      appIdErr.textContent = data.error ||
+        'No application found with these details.';
+      return;
+    }
+
+    showStatusResult(data);
+
+  } catch (err) {
+    console.error(err);
+    appIdErr.textContent = 'Network error. Please try again.';
+  } finally {
+    checkStatusBtn.textContent = 'Check Status';
+    checkStatusBtn.disabled = false;
+  }
+});
+
+// Reset — check another application
+checkAnotherBtn?.addEventListener('click', () => {
+  statusResult.style.display = 'none';
+  statusFormCard.style.display = 'block';
+  document.getElementById('statusAppId').value = '';
+  document.getElementById('statusEmail').value = '';
+});

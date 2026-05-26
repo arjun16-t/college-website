@@ -3833,3 +3833,159 @@ p {
   color: var(--clr-gray-text);
   margin: 0;
 }
+
+/* ============================================
+   APPLICATION STATUS PAGE
+   ============================================ */
+.status-page {
+  background-color: var(--clr-gray-light);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Help list */
+.status-help-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.status-help-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.status-help-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--clr-white);
+  flex-shrink: 0;
+}
+
+.status-help-icon.pending  { background-color: #e65100; }
+.status-help-icon.accepted { background-color: #2e7d32; }
+.status-help-icon.rejected { background-color: var(--clr-primary); }
+
+.status-help-item h4 {
+  font-size: 1rem;
+  color: var(--clr-black);
+  margin-bottom: 0.25rem;
+}
+
+.status-help-item p {
+  font-size: 0.9rem;
+  color: var(--clr-gray-text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Result card — hidden by default */
+.status-result-card {
+  display: none;
+  background-color: var(--clr-white);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  animation: panelFade 0.4s ease;
+}
+
+/* Status result sections */
+.status-result {
+  display: none;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--clr-gray-mid);
+}
+
+.status-result.show {
+  display: block;
+}
+
+.status-result-icon {
+  font-size: 3rem;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.status-result.pending .status-result-icon {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-result.accepted .status-result-icon {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-result.rejected .status-result-icon {
+  background-color: #fff8f8;
+  color: var(--clr-primary);
+}
+
+.status-result h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.status-result.pending h3  { color: #e65100; }
+.status-result.accepted h3 { color: #2e7d32; }
+.status-result.rejected h3 { color: var(--clr-primary); }
+
+.status-result-message {
+  font-size: 0.95rem;
+  color: var(--clr-gray-text);
+  line-height: 1.7;
+}
+
+/* Details table */
+.status-details-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.status-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--clr-gray-mid);
+  font-size: 0.95rem;
+  gap: 1rem;
+}
+
+.status-detail-row:last-child {
+  border-bottom: none;
+}
+
+.status-detail-row span:first-child {
+  color: var(--clr-gray-text);
+  flex-shrink: 0;
+}
+
+.status-detail-row span:last-child {
+  color: var(--clr-black);
+  font-weight: 600;
+  text-align: right;
+}

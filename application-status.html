@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Gallery — RML Group of Institutions, Bhopal. Campus, Events and Student Life photos." />
-  <title>Gallery | RML Group of Institutions</title>
+  <meta name="description" content="Check your application status at RML Group of Institutions." />
+  <title>Application Status | RML Group of Institutions</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
@@ -12,7 +12,7 @@
 
   <!-- HEADER -->
   <header class="header" id="header">
-    <nav class="navbar nav-container">
+    <nav class="navbar container">
       <div class="nav-brand">
         <img src="images/logo.png" alt="RML Logo" class="nav-logo" />
         <div class="nav-brand-text">
@@ -46,8 +46,9 @@
           </ul>
         </li>
         <li><a href="facilities.html" class="nav-link">Facilities</a></li>
-        <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         <li><a href="notices.html" class="nav-link">Notices</a></li>
+        <li><a href="downloads.html" class="nav-link">Downloads</a></li>
         <li><a href="contact.html" class="nav-link">Contact</a></li>
       </ul>
       <div class="nav-actions">
@@ -65,60 +66,178 @@
       <p class="breadcrumb">
         <a href="index.html">Home</a>
         <span>►</span>
-        <span>Gallery</span>
+        <span>Application Status</span>
       </p>
       <div class="page-hero-title-wrap">
-        <h1 class="page-hero-title">Gallery</h1>
+        <h1 class="page-hero-title">Application Status</h1>
       </div>
     </div>
   </section>
 
-  <!-- GALLERY SECTION -->
-  <main class="section gallery-page">
+  <!-- MAIN -->
+  <main class="section status-page">
     <div class="inner-container">
+      <div class="status-grid">
 
-      <!-- Filter Tabs -->
-      <div class="gallery-filters reveal">
-        <button class="gallery-filter-btn active" data-filter="all">
-          All
-        </button>
-        <button class="gallery-filter-btn" data-filter="campus">
-          Campus Infrastructure
-        </button>
-        <button class="gallery-filter-btn" data-filter="events">
-          Events
-        </button>
-        <button class="gallery-filter-btn" data-filter="student-life">
-          Student Life
-        </button>
+        <!-- LEFT: Info -->
+        <div class="status-info reveal">
+          <p class="contact-tag">/ track your application /</p>
+          <h2 class="contact-heading">
+            Check Your Admission Application Status
+          </h2>
+          <p class="contact-subtext">
+            Enter your Application ID and registered email 
+            address to check the current status of your 
+            admission application.
+          </p>
+
+          <div class="status-help-list">
+            <div class="status-help-item">
+              <div class="status-help-icon pending">P</div>
+              <div>
+                <h4>Pending</h4>
+                <p>Your application is under review by the admissions team.</p>
+              </div>
+            </div>
+            <div class="status-help-item">
+              <div class="status-help-icon accepted">A</div>
+              <div>
+                <h4>Accepted</h4>
+                <p>Congratulations! Visit the admissions office to complete the process.</p>
+              </div>
+            </div>
+            <div class="status-help-item">
+              <div class="status-help-icon rejected">R</div>
+              <div>
+                <h4>Rejected</h4>
+                <p>Contact our admissions office for further details and guidance.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="apply-contact-info" style="margin-top: 2rem;">
+            <p><strong>Need help?</strong></p>
+            <p>Phone: +91-755-456-7890</p>
+            <p>Email: info@rmlgroupofinstitutions.ac.in</p>
+            <p>Timings: Mon–Sat, 9:00 AM – 5:00 PM</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: Status Check Form + Result -->
+          <div class="status-form-wrap reveal reveal-delay-2">
+
+            <!-- Search Form -->
+            <div class="application-form-card" id="statusFormCard">
+              <h3 class="step-title">Track Application</h3>
+              <p class="step-subtitle">
+                Enter your details to check status.
+              </p>
+
+              <div class="app-form-grid">
+                <div class="app-form-group full">
+                  <label class="app-label">Application ID *</label>
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    id="statusAppId"
+                    class="app-input"
+                    placeholder="Enter your Application ID"
+                  />
+                  <span class="form-error" id="statusAppIdError"></span>
+                </div>
+
+                <div class="app-form-group full">
+                  <label class="app-label">Registered Email *</label>
+                  <input
+                    type="email"
+                    id="statusEmail"
+                    class="app-input"
+                    placeholder="Enter your registered email"
+                  />
+                  <span class="form-error" id="statusEmailError"></span>
+                </div>
+              </div>
+
+              <div class="step-actions" style="margin-top: 1.5rem;">
+                <span></span>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="checkStatusBtn"
+                >
+                  Check Status
+                </button>
+              </div>
+            </div>
+
+            <!-- Result Card — hidden until API responds -->
+            <div class="status-result-card" id="statusResult">
+
+              <!-- Pending -->
+              <div class="status-result pending" id="resultPending">
+                <div class="status-result-icon">⏳</div>
+                <h3>Application Pending</h3>
+                <p class="status-result-message"></p>
+              </div>
+
+              <!-- Accepted -->
+              <div class="status-result accepted" id="resultAccepted">
+                <div class="status-result-icon">✓</div>
+                <h3>Application Accepted</h3>
+                <p class="status-result-message"></p>
+              </div>
+
+              <!-- Rejected -->
+              <div class="status-result rejected" id="resultRejected">
+                <div class="status-result-icon">✕</div>
+                <h3>Application Rejected</h3>
+                <p class="status-result-message"></p>
+              </div>
+
+              <!-- Details Table -->
+              <div class="status-details-table">
+                <div class="status-detail-row">
+                  <span>Application ID</span>
+                  <span id="resultAppId"></span>
+                </div>
+                <div class="status-detail-row">
+                  <span>Student Name</span>
+                  <span id="resultName"></span>
+                </div>
+                <div class="status-detail-row">
+                  <span>Course Applied</span>
+                  <span id="resultCourse"></span>
+                </div>
+                <div class="status-detail-row">
+                  <span>Submitted On</span>
+                  <span id="resultSubmitted"></span>
+                </div>
+                <div class="status-detail-row">
+                  <span>Last Updated</span>
+                  <span id="resultUpdated"></span>
+                </div>
+              </div>
+
+              <!-- Back button -->
+              <button
+                type="button"
+                class="btn btn-outline"
+                id="checkAnotherBtn"
+                style="margin-top: 1.5rem; width: 100%;"
+              >
+                Check Another Application
+              </button>
+
+            </div>
+
+          </div>
       </div>
-
-      <!-- Gallery Grid -->
-      <div class="gallery-grid" id="galleryGrid"></div>
-      <!-- end gallery-grid -->
-
     </div>
   </main>
 
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightboxClose">✕</button>
-    <button class="lightbox-prev" id="lightboxPrev">&#8249;</button>
-    <button class="lightbox-next" id="lightboxNext">&#8250;</button>
-    <div class="lightbox-content">
-      <div class="lightbox-image-wrap">
-        <img src="" alt="" id="lightboxImg" />
-        <div class="lightbox-placeholder" id="lightboxPlaceholder">
-          <span id="lightboxLabel"></span>
-        </div>
-      </div>
-      <p class="lightbox-caption" id="lightboxCaption"></p>
-    </div>
-  </div>
-
     <!-- ============================================
-     FOOTER
-     ============================================ -->
+    FOOTER
+    ============================================ -->
     <footer class="footer">
     <div class="footer-main">
         <div class="container">

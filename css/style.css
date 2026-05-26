@@ -490,6 +490,21 @@ p {
 }
 
 /* ============================================
+  SKELETON PREVIEW
+  ============================================ */
+
+.skeleton-box {
+  background: #e0e0e0;
+  border-radius: var(--radius-md);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+/* ============================================
    SCROLL REVEAL ANIMATIONS
    ============================================ */
 

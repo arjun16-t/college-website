@@ -80,6 +80,7 @@ document.querySelectorAll('.dropdown-menu a').forEach(link => {
   });
 });
 
+
 // ============================================
 //   SCROLL REVEAL - Intersection Observer
 // ============================================
@@ -147,12 +148,36 @@ if (statsSection) statObserver.observe(statsSection);
 //   NOTICES HOME - Get Latest from server
 // ============================================
 async function renderNoticeCarousel() {
+    const container = document.getElementById('newsSlides');
+
+  const skeletonHTML = `
+    <div class="news-slide active">
+      <div class="news-slide-text">
+        <span class="news-tag">
+        <div class="skeleton-box" style="width: 100px; height: 36px; border-radius: 20px;"></div>
+        </span>
+        <h3 class="news-slide-title">
+          <div class="skeleton-box" style="height: 18px; width: 90%;"></div>
+        </h3>
+        <p class="news-slide-excerpt">
+        <div class="skeleton-box" style="height: 14px; width: 60%; margin-bottom: 8px;"></div>
+        <div class="skeleton-box" style="height: 14px; width: 50%; margin-bottom: 5rem;"></div>
+        </p>
+        <div class="skeleton-box" style="width: 120px; height: 36px; border-radius: var(--radius-md);"></div>
+      </div>
+      <div class="news-slide-image">
+        <div class="skeleton-box" style="width: 360px; height: 360px; border-radius: var(--radius-md);"></div>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = skeletonHTML;
+
   try {
     const response = await fetch(`${API_BASE}/notices/latest`);
     const result = await response.json();
     const notices = result.data;
 
-    const container = document.getElementById('newsSlides');
     container.innerHTML = "";
 
     notices.forEach((notice, index) => {
@@ -236,10 +261,6 @@ async function renderNoticeCarousel() {
 if (document.getElementById('newsSlides')) {
   document.addEventListener('DOMContentLoaded', renderNoticeCarousel);
 }
-
-// ============================================
-//   NEWS CAROUSEL
-// ============================================
 
 // ============================================
 //   ENQUIRY MODAL
@@ -635,6 +656,31 @@ function initLightbox() {
 // ============================================
 
 async function renderGallery() {
+  const container = document.getElementById('galleryGrid');
+
+  const skeletonHTML = `
+    <div class="gallery-item">
+      <div class="skeleton-box" style="height: 200px"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="skeleton-box" style="height: 200px"></div>
+    </div>
+    <div class="gallery-item tall">
+      <div class="skeleton-box" style="height: 320px"></div>
+    </div>
+    <div class="gallery-item wide">
+      <div class="skeleton-box" style="height: 200px"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="skeleton-box" style="height: 200px"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="skeleton-box" style="height: 200px"></div>
+    </div>
+  `;
+
+  container.innerHTML = skeletonHTML;
+
   try {
     const response = await fetch(`${API_BASE}/gallery`);
     const result = await response.json();
@@ -642,7 +688,6 @@ async function renderGallery() {
 
     const layouts = ['', '', 'tall', 'wide', ''];
 
-    const container = document.getElementById('galleryGrid');
     container.innerHTML = "";
 
     gallery.forEach((item, index) => {
@@ -712,12 +757,47 @@ noticeFilterBtns.forEach(btn => {
 //   NOTICES - Get from Server
 // ============================================
 async function renderNotices() {
+  const container = document.getElementById('noticesList');
+
+  const skeletonHTML = `
+    <div class="notice-row">
+      <div class="notice-left" style="flex: 1; display: flex; gap: 1rem; align-items: center;">
+        <div class="skeleton-box" style="width: 60px; height: 24px; border-radius: 20px;"></div>
+        <div style="flex: 1;">
+          <div class="skeleton-box" style="height: 16px; width: 70%; margin-bottom: 8px;"></div>
+          <div class="skeleton-box" style="height: 14px; width: 40%;"></div>
+        </div>
+      </div>
+      <div class="skeleton-box" style="width: 120px; height: 36px; border-radius: var(--radius-md);"></div>
+    </div>
+    <div class="notice-row">
+      <div class="notice-left" style="flex: 1; display: flex; gap: 1rem; align-items: center;">
+        <div class="skeleton-box" style="width: 60px; height: 24px; border-radius: 20px;"></div>
+        <div style="flex: 1;">
+          <div class="skeleton-box" style="height: 16px; width: 70%; margin-bottom: 8px;"></div>
+          <div class="skeleton-box" style="height: 14px; width: 40%;"></div>
+        </div>
+      </div>
+      <div class="skeleton-box" style="width: 120px; height: 36px; border-radius: var(--radius-md);"></div>
+    </div>
+    <div class="notice-row">
+      <div class="notice-left" style="flex: 1; display: flex; gap: 1rem; align-items: center;">
+        <div class="skeleton-box" style="width: 60px; height: 24px; border-radius: 20px;"></div>
+        <div style="flex: 1;">
+          <div class="skeleton-box" style="height: 16px; width: 70%; margin-bottom: 8px;"></div>
+          <div class="skeleton-box" style="height: 14px; width: 40%;"></div>
+        </div>
+      </div>
+      <div class="skeleton-box" style="width: 120px; height: 36px; border-radius: var(--radius-md);"></div>
+    </div>
+  `;
+
+  container.innerHTML = skeletonHTML;
   try {
     const response = await fetch(`${API_BASE}/notices`);
     const result = await response.json();
     const notices = result.data;
 
-    const container = document.getElementById('noticesList');
     container.innerHTML = "";
 
     notices.forEach((notice) => {
@@ -864,12 +944,77 @@ contactForm?.addEventListener('submit', async (e) => {
 //   DOWNLOADS - Get from Server
 // ============================================
 async function renderDownloads() {
+  const container = document.getElementById('downloadsTableBody');
+
+  const skeletonHTML = `
+    <tr>
+      <td class="col-sno">
+        <div class="skeleton-box" style="width: 24px; height: 35px; border-radius: 20px;"></div>
+      </td>
+      <td class="col-name">
+        <div class="doc-name-wrap">
+          <div class="skeleton-box" style="width: 44px; height: 44px; border-radius: 4px; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div class="skeleton-box" style="height: 16px; width: 70%; margin-bottom: 6px;"></div>
+            <div class="skeleton-box" style="height: 13px; width: 45%;"></div>
+          </div>
+        </div>
+      </td>
+      <td class="col-size">
+      <div class="skeleton-box" style="height: 16px; border-radius: 20px; font-size: 0.82rem;"></div>
+      </td>
+      <td class="col-download">
+      <div class="skeleton-box" style="height: 16px; border-radius: 20px; font-size: 0.82rem;"></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="col-sno">
+        <div class="skeleton-box" style="width: 24px; height: 35px; border-radius: 20px;"></div>
+      </td>
+      <td class="col-name">
+        <div class="doc-name-wrap">
+          <div class="skeleton-box" style="width: 44px; height: 44px; border-radius: 4px; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div class="skeleton-box" style="height: 16px; width: 70%; margin-bottom: 6px;"></div>
+            <div class="skeleton-box" style="height: 13px; width: 45%;"></div>
+          </div>
+        </div>
+      </td>
+      <td class="col-size">
+      <div class="skeleton-box" style="height: 16px; border-radius: 20px; font-size: 0.82rem;"></div>
+      </td>
+      <td class="col-download">
+      <div class="skeleton-box" style="height: 16px; border-radius: 20px; font-size: 0.82rem;"></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="col-sno">
+        <div class="skeleton-box" style="width: 24px; height: 35px; border-radius: 20px;"></div>
+      </td>
+      <td class="col-name">
+        <div class="doc-name-wrap">
+          <div class="skeleton-box" style="width: 44px; height: 44px; border-radius: 4px; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div class="skeleton-box" style="height: 16px; width: 70%; margin-bottom: 6px;"></div>
+            <div class="skeleton-box" style="height: 13px; width: 45%;"></div>
+          </div>
+        </div>
+      </td>
+      <td class="col-size">
+      <div class="skeleton-box" style="height: 16px; border-radius: 20px; font-size: 0.82rem;"></div>
+      </td>
+      <td class="col-download">
+      <div class="skeleton-box" style="height: 16px; border-radius: 20px; font-size: 0.82rem;"></div>
+      </td>
+    </tr>
+  `;
+
+  container.innerHTML = skeletonHTML;
   try {
     const response = await fetch(`${API_BASE}/downloads`);
     const result = await response.json();
     const downloads = result.data;
 
-    const container = document.getElementById('downloadsTableBody');
     container.innerHTML = "";
 
     downloads.forEach((item, index) => {

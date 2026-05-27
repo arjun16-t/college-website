@@ -319,6 +319,7 @@ document.getElementById('captchaRefresh')
 //   ENQUIRY FORM VALIDATION
 // ============================================
 const enquiryForm = document.getElementById('enquiryForm');
+const enquireSubmitBtn = document.getElementById('enquireSubmit');
 
 const showError = (id, msg) => {
   document.getElementById(id).textContent = msg;
@@ -384,6 +385,9 @@ enquiryForm?.addEventListener('submit', async (e) => {
       message: message
     };
 
+    enquireSubmitBtn.disabled = true;
+    enquireSubmitBtn.textContent = 'Submitting...';
+
     try {
       const response = await fetch(`${API_BASE}/enquiry/`, {
         method: 'POST',
@@ -398,6 +402,9 @@ enquiryForm?.addEventListener('submit', async (e) => {
       console.log(data)
 
       if (response.ok) {
+        enquireSubmitBtn.disabled = false;
+        enquireSubmitBtn.textContent = 'Submit Enquiry';
+        
         document.getElementById('formSuccess').style.display = 'block';
         enquiryForm.reset();
         generateCaptcha();
@@ -418,10 +425,14 @@ enquiryForm?.addEventListener('submit', async (e) => {
             showError(errorMap[field], data[field][0]);
           }
         });
+        enquireSubmitBtn.disabled = false;
+        enquireSubmitBtn.textContent = 'Submit Enquiry';
       }
 
     } catch (err) {
       showError('enqNameError', 'Network error. Please check your connection.');
+      enquireSubmitBtn.disabled = false;
+      enquireSubmitBtn.textContent = 'Submit Enquiry';
     }
   }
 });
@@ -846,6 +857,7 @@ if (document.getElementById('noticesList')) {
 //   CONTACT FORM VALIDATION
 // ============================================
 const contactForm = document.getElementById('contactForm');
+const sendBtn = document.getElementById("sendBtn");
 
 // const showError = (id, msg) => {
 //   document.getElementById(id).textContent = msg;
@@ -901,6 +913,9 @@ contactForm?.addEventListener('submit', async (e) => {
       message: message
     };
 
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
+
     try {
       const response = await fetch(`${API_BASE}/contact/`, {
         method: 'POST',
@@ -915,6 +930,9 @@ contactForm?.addEventListener('submit', async (e) => {
       console.log(data)
 
       if (response.ok) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send a Message';
+    
         document.getElementById('ctFormSuccess').style.display = 'block';
         contactForm.reset();
         setTimeout(() => {
@@ -932,10 +950,14 @@ contactForm?.addEventListener('submit', async (e) => {
             showError(errorMap[field], data[field][0]);
           }
         });
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send a Message';
       }
 
     } catch (err) {
       showError('ctNameError', 'Network error. Please check your connection.');
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send a Message';
     }
   }
 });
@@ -1397,10 +1419,10 @@ async function applyApplication() {
     }
 }
 document.getElementById('step3Next')
-  ?.addEventListener('click', async () => {
+  ?.addEventListener('click', async (e) => {
     if (!validateStep3()) return;
     
-    const btn = document.getElementById('step3Next');
+    const btn = e.currentTarget;
 
     btn.disabled = true;
     btn.textContent = 'Sending OTP...';
@@ -1420,8 +1442,6 @@ async function verifyAndSubmit() {
   const otp = document.getElementById('otpInput').value.trim();
   const otpError = document.getElementById('otpError');
 
-  if (!validateStep4()) return;
-
   try {
     // Step 1 — Verify OTP
     const verifyResponse = await fetch(`${API_BASE}/verify-otp/`, {
@@ -1438,7 +1458,7 @@ async function verifyAndSubmit() {
 
     if (!verifyResponse.ok) {
       otpError.textContent = verifyData.error || 'Invalid OTP. Please try again.';
-      return;
+      return false;
     }
 
     // Step 2 — Submit application
@@ -1459,7 +1479,7 @@ async function verifyAndSubmit() {
 
     if (!submitResponse.ok) {
       otpError.textContent = submitResult.error || 'Submission failed. Please try again.';
-      return;
+      return false;
     }
 
     // Success
@@ -1470,10 +1490,12 @@ async function verifyAndSubmit() {
     appForm.style.display = 'none';
     document.querySelector('.step-indicators').style.display = 'none';
     appSuccess.style.display = 'block';
+    return true;
 
   } catch (err) {
     console.error('Error:', err);
     otpError.textContent = 'Network error. Please check your connection.';
+    return false;
   }
 }
 
@@ -1523,8 +1545,11 @@ async function resendOtp() {
   const student_name = document.getElementById('appName').value.trim();
   const email = document.getElementById('appEmail').value.trim();
   const otpError = document.getElementById('otpError');
+  const resendBtn = document.getElementById('resendOtpBtn');
+
 
   try {
+    resendBtn.disabled = true;
     const retryResponse = await fetch(`${API_BASE}/resend-otp/`, {
       method: 'POST',
       credentials: 'include',
@@ -1538,6 +1563,7 @@ async function resendOtp() {
     const retryData = await retryResponse.json();
     if (!retryResponse.ok) {
       otpError.textContent = retryData.error || 'Invalid OTP. Please try again.';
+      resendBtn.disabled = false;
       return false;
     }
 
@@ -1547,6 +1573,7 @@ async function resendOtp() {
   } catch (err) {
       console.log(err);
       otpError.textContent = 'Network error. Please try again.';
+      resendBtn.disabled = false;
   }
 }
 
@@ -1577,9 +1604,21 @@ document.getElementById('appMarksheet12')
 
 // ── Form Submit ──
 document.getElementById('appSubmit')
-  ?.addEventListener('click', async () => {
-    await verifyAndSubmit();
-  });
+  ?.addEventListener('click', async (e) => {
+  if (!validateStep4()) return;
+
+  const verifyBtn = e.currentTarget;
+  
+  verifyBtn.disabled = true;
+  verifyBtn.textContent = 'Submitting...';
+
+  const success = await verifyAndSubmit();
+
+  if (!success) {
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = "Submit Application ✓";
+  }
+});
 
 document.getElementById('applyAnotherBtn')?.addEventListener('click', () => {
   // 1. Clear the success state

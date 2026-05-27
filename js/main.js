@@ -431,6 +431,7 @@ enquiryForm?.addEventListener('submit', async (e) => {
 
     } catch (err) {
       showError('enqNameError', 'Network error. Please check your connection.');
+    } finally {
       enquireSubmitBtn.disabled = false;
       enquireSubmitBtn.textContent = 'Submit Enquiry';
     }
@@ -698,8 +699,15 @@ async function renderGallery() {
     const gallery = result.data;
 
     const layouts = ['', '', 'tall', 'wide', ''];
-
-    container.innerHTML = "";
+    
+    if (gallery.length === 0) {
+      container.innerHTML = `
+      <div class="empty-state">
+        No photos available at the moment.
+      </div>`;
+      return;
+    }
+    container.innerHTML="";
 
     gallery.forEach((item, index) => {
       const layout = layouts[index % layouts.length];
@@ -724,6 +732,10 @@ async function renderGallery() {
     initLightbox();
   } catch (error) {
     console.error("Error loading gallery:", error);
+    container.innerHTML = `
+      <div class=""error-state"">
+        Failed to load content. Please try again later.
+      </div>`;
   }
 }
 
@@ -809,6 +821,13 @@ async function renderNotices() {
     const result = await response.json();
     const notices = result.data;
 
+    if (notices.length === 0) {
+      container.innerHTML = `
+      <div class="empty-state">
+        No notices available at the moment.
+      </div>`;
+      return;
+    }
     container.innerHTML = "";
 
     notices.forEach((notice) => {
@@ -847,6 +866,10 @@ async function renderNotices() {
     observeRevealElements();
   } catch (error) {
     console.error("Error loading notices:", error);
+    container.innerHTML = `
+    <div class="error-state">
+      Failed to load notices. Please try again later.
+    </div>`;
   }
 }
 
@@ -956,6 +979,7 @@ contactForm?.addEventListener('submit', async (e) => {
 
     } catch (err) {
       showError('ctNameError', 'Network error. Please check your connection.');
+    } finally {
       sendBtn.disabled = false;
       sendBtn.textContent = 'Send a Message';
     }
@@ -1036,7 +1060,14 @@ async function renderDownloads() {
     const response = await fetch(`${API_BASE}/downloads`);
     const result = await response.json();
     const downloads = result.data;
-
+    
+    if (downloads.length === 0) {
+      container.innerHTML = `
+      <div class="empty-state">
+        No downloads available at the moment.
+      </div>`;
+      return;
+    }
     container.innerHTML = "";
 
     downloads.forEach((item, index) => {
@@ -1087,6 +1118,10 @@ async function renderDownloads() {
 
   } catch (error) {
     console.error("Error loading notices:", error);
+    container.innerHTML = `
+    <div class="error-state">
+      Failed to load content. Please try again later.
+    </div>`;
   }
 }
 
@@ -1573,7 +1608,8 @@ async function resendOtp() {
   } catch (err) {
       console.log(err);
       otpError.textContent = 'Network error. Please try again.';
-      resendBtn.disabled = false;
+  } finally {
+    resendBtn.disabled = false;
   }
 }
 
@@ -1714,14 +1750,10 @@ checkStatusBtn?.addEventListener('click', async () => {
   checkStatusBtn.disabled = true;
 
   try {
-    console.log("asd");
-
     const response = await fetch(
       `${API_BASE}/application-status/?id=${appId}&email=${encodeURIComponent(email)}`,
       { credentials: 'include' }
     );
-    console.log(response);
-
 
     const data = await response.json();
 

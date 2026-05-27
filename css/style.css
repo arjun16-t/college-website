@@ -170,6 +170,20 @@ p {
   justify-content: center;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--clr-gray-text);
+  font-size: 1rem;
+}
+
+.error-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--clr-primary);
+  font-size: 1rem;
+}
+
 /* ============================================
    HEADER & NAVBAR
    ============================================ */

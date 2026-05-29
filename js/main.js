@@ -1,5 +1,6 @@
-console.log("PAGE LOADED");
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = window.location.hostname === '127.0.0.1' 
+  ? 'http://127.0.0.1:8000/api'
+  : 'https://api.rmlgroup.in/api';
 
 // ============================================
 //   UTILITY FUNCTIONS
@@ -399,7 +400,6 @@ enquiryForm?.addEventListener('submit', async (e) => {
       });
 
       const data = await response.json();
-      console.log(data)
 
       if (response.ok) {
         enquireSubmitBtn.disabled = false;
@@ -950,7 +950,6 @@ contactForm?.addEventListener('submit', async (e) => {
       });
 
       const data = await response.json();
-      console.log(data)
 
       if (response.ok) {
         sendBtn.disabled = false;
@@ -1343,6 +1342,7 @@ document.getElementById('step2Next')
     if (validateStep2()) goToStep(3);
   });
 
+
 async function applyApplication() {
     // 1. Build FormData
     const formData = new FormData();
@@ -1606,7 +1606,6 @@ async function resendOtp() {
       startOtpCountdown();
     }
   } catch (err) {
-      console.log(err);
       otpError.textContent = 'Network error. Please try again.';
   } finally {
     resendBtn.disabled = false;
